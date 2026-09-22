@@ -283,7 +283,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             margin: '0 4px'
           }} />
 
-          {/* Unified Profile Badge (Replaces the duplicate pill + avatar) */}
+          {/* Unified Profile Badge */}
           <button
             onClick={() => onOpenAuth ? onOpenAuth() : onNavigate('profile')}
             style={{
@@ -292,29 +292,42 @@ export const Navbar: React.FC<NavbarProps> = ({
               gap: '8px',
               padding: '4px 12px 4px 4px',
               borderRadius: '9999px',
-              background: '#FFFFFF',
-              border: '1.5px solid var(--border-ink)',
+              background: user.authProvider === 'google' ? '#FFF8F6' : '#FFFFFF',
+              border: `1.5px solid ${user.authProvider === 'google' ? '#FF3B20' : 'var(--border-ink)'}`,
               boxShadow: 'var(--shadow-tactile-sm)',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
               whiteSpace: 'nowrap'
             }}
-            title="Manage Profile / Account"
+            title={user.authProvider === 'google' ? `Signed in as ${user.name} (${user.email})` : 'Sign in with Google'}
           >
-            <div style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '50%',
-              background: 'var(--text-primary)',
-              color: '#FFFFFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 900,
-              fontSize: '0.75rem'
-            }}>
-              {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
-            </div>
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  objectFit: 'cover'
+                }}
+              />
+            ) : (
+              <div style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                background: 'var(--text-primary)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '0.75rem'
+              }}>
+                {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+              </div>
+            )}
             <span style={{
               fontWeight: 800,
               fontSize: '0.8rem',

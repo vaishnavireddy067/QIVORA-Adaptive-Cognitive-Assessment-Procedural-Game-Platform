@@ -64,6 +64,10 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
+  googleId?: string;
+  emailVerified?: boolean;
+  authProvider?: 'google' | 'guest';
   cqScore: number;
   streakDays: number;
   testsCompleted: number;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { GameId, AssessmentResult, UserProfile } from './types';
-import { getUserProfile } from './services/storage';
+import { GameId, AssessmentResult } from './types';
 import { sounds } from './services/soundEngine';
+import { getUserProfile } from './services/storage';
+import { useAuth } from './context/AuthContext';
 
 import { Navbar } from './components/common/Navbar';
 import { AuthModal } from './components/common/AuthModal';
@@ -35,13 +36,12 @@ type ViewMode =
   | 'profile';
 
 export function App() {
+  const { user, updateUser, isAuthModalOpen, openAuthModal, closeAuthModal } = useAuth();
   const [currentView, setCurrentView] = useState<ViewMode>('landing');
   const [activeGameId, setActiveGameId] = useState<GameId | null>(null);
-  const [user, setUser] = useState<UserProfile>(getUserProfile());
   const [latestResult, setLatestResult] = useState<AssessmentResult | null>(null);
   
   // Modals state
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
   const [isCopilotModalOpen, setIsCopilotModalOpen] = useState(false);
   const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
@@ -80,7 +80,7 @@ export function App() {
 
   const handleAssessmentComplete = (result: AssessmentResult) => {
     setLatestResult(result);
-    setUser(getUserProfile());
+    updateUser(getUserProfile());
     setCurrentView('results');
   };
 
@@ -109,7 +109,7 @@ export function App() {
             else if (tab === 'profile') setCurrentView('profile');
           }}
           user={user}
-          onOpenAuth={() => setIsAuthModalOpen(true)}
+          onOpenAuth={openAuthModal}
           onOpenDailyDrill={() => setIsDailyModalOpen(true)}
           onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
         />
@@ -123,7 +123,7 @@ export function App() {
             onPlay={handleLaunchGame}
             onTakeTest={handleTakeTest}
             onOpenDashboard={() => setCurrentView('dashboard')}
-            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenAuth={openAuthModal}
           />
         )}
 
@@ -145,7 +145,7 @@ export function App() {
             }}
             activeTab="home"
             userName={user.name}
-            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenAuth={openAuthModal}
             onOpenDailyDrill={() => setIsDailyModalOpen(true)}
             onOpenDuel={() => setCurrentView('duel')}
             onOpenCertificate={() => setIsCertificateModalOpen(true)}
@@ -179,7 +179,7 @@ export function App() {
             }}
             activeTab="games"
             userName={user.name}
-            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenAuth={openAuthModal}
           />
         )}
 
@@ -189,7 +189,7 @@ export function App() {
             gameId={activeGameId || 'grid'}
             onBack={() => setCurrentView('games')}
             onLaunchTimedAssessment={() => setCurrentView('test')}
-            onComplete={() => setUser(getUserProfile())}
+            onComplete={() => updateUser(getUserProfile())}
           />
         )}
 
@@ -258,7 +258,7 @@ export function App() {
         {currentView === 'profile' && (
           <ProfilePage
             user={user}
-            onUpdateUser={setUser}
+            onUpdateUser={updateUser}
           />
         )}
       </main>
@@ -266,11 +266,7 @@ export function App() {
       {/* Global Modals */}
       <AuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onLoginSuccess={(updatedUser) => {
-          setUser(updatedUser);
-          setIsAuthModalOpen(false);
-        }}
+        onClose={closeAuthModal}
         currentUser={user}
       />
 
@@ -329,7 +325,7 @@ export function App() {
               <span style={{ cursor: 'pointer' }} onClick={() => setCurrentView('test')}>Mock Test</span>
               <span style={{ cursor: 'pointer' }} onClick={() => setIsDailyModalOpen(true)}>Daily Drill</span>
               <span style={{ cursor: 'pointer' }} onClick={() => setIsShortcutsModalOpen(true)}>Shortcuts (?)</span>
-              <span style={{ cursor: 'pointer' }} onClick={() => setIsAuthModalOpen(true)}>Log In</span>
+              <span style={{ cursor: 'pointer' }} onClick={openAuthModal}>Log In</span>
             </div>
           </div>
         </footer>

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { UserProfile, GameAttempt } from '../types';
 import { getGameAttempts, saveUserProfile } from '../services/storage';
 import { GAMES_DATA } from '../engine/gamesData';
-import { User, Shield, CheckCircle, Flame, Calendar, Award } from 'lucide-react';
+import { User, Shield, CheckCircle, Flame, Calendar, Award, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface ProfilePageProps {
   user: UserProfile;
@@ -10,6 +11,7 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ user, onUpdateUser }) => {
+  const { logout } = useAuth();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [isEditing, setIsEditing] = useState(false);
@@ -23,40 +25,73 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user, onUpdateUser }) 
     setIsEditing(false);
   };
 
+  const handleSignOut = () => {
+    logout();
+  };
+
   return (
     <div style={{ padding: '36px 0 60px 0' }}>
       <div className="container" style={{ maxWidth: '960px' }}>
         {/* Profile Header */}
         <div className="glass-panel" style={{ padding: '32px', display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '32px' }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #6366F1 0%, #10B981 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 25px rgba(99, 102, 241, 0.4)'
-          }}>
-            <User size={40} color="#FFF" />
-          </div>
+          {user.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user.name}
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                border: '3px solid #FF3B20',
+                objectFit: 'cover',
+                boxShadow: '0 0 25px rgba(255, 59, 32, 0.4)'
+              }}
+            />
+          ) : (
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #6366F1 0%, #10B981 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 25px rgba(99, 102, 241, 0.4)'
+            }}>
+              <User size={40} color="#FFF" />
+            </div>
+          )}
 
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>{user.name}</h1>
-              <span className="badge badge-emerald">Verified Candidate</span>
+              <span className="badge badge-emerald">
+                {user.authProvider === 'google' ? 'Google Verified' : 'Candidate Profile'}
+              </span>
             </div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '2px' }}>
               {user.email} • Joined {user.joinedDate}
             </p>
           </div>
 
-          <button
-            className="btn btn-secondary btn-sm"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? 'Cancel' : 'Edit Profile'}
-          </button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? 'Cancel' : 'Edit Profile'}
+            </button>
+            {user.authProvider === 'google' && (
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={handleSignOut}
+                style={{ color: '#EF4444', borderColor: '#FCA5A5' }}
+              >
+                <LogOut size={14} />
+                <span>Sign Out</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Edit Form Modal/Dropdown */}
