@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Flame, Calendar, Sparkles, CheckCircle2, Play, Trophy, Clock, Zap, Star } from 'lucide-react';
 import { sounds } from '../../services/soundEngine';
 
+import { getGameAttempts } from '../../services/storage';
+
 interface DailyWorkoutModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +15,7 @@ export const DailyWorkoutModal: React.FC<DailyWorkoutModalProps> = ({
   onClose,
   onStartDailyChallenge
 }) => {
-  const [streak, setStreak] = useState(5);
+  const [streak, setStreak] = useState(0);
   const [completedToday, setCompletedToday] = useState(false);
 
   useEffect(() => {
@@ -66,18 +68,36 @@ export const DailyWorkoutModal: React.FC<DailyWorkoutModalProps> = ({
     }
   ];
 
-  // Generate 84 days (12 weeks) of activity heatmap
+  // Generate 84 days (12 weeks) of activity heatmap strictly from real recorded attempts
   const generateHeatmapDays = () => {
+    let attempts: { completedAt: string | number }[] = [];
+    try {
+      attempts = getGameAttempts();
+    } catch {}
+
+    const attemptsCountByDate = new Map<string, number>();
+    attempts.forEach(att => {
+      try {
+        const dStr = new Date(att.completedAt).toISOString().slice(0, 10);
+        attemptsCountByDate.set(dStr, (attemptsCountByDate.get(dStr) || 0) + 1);
+      } catch {}
+    });
+
     const days = [];
     for (let i = 83; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      // Deterministic activity based on day number
-      const dayNum = d.getDate();
-      const intensity = (dayNum % 7 === 0 || dayNum % 5 === 0) ? (dayNum % 4) + 1 : (dayNum % 3 === 0 ? 1 : 0);
+      const dateKey = d.toISOString().slice(0, 10);
+      const count = attemptsCountByDate.get(dateKey) || 0;
+      let intensity = 0;
+      if (count >= 4) intensity = 4;
+      else if (count >= 2) intensity = 3;
+      else if (count === 1) intensity = 2;
+      else if (i === 0 && completedToday) intensity = 2;
+
       days.push({
-        date: d.toISOString().slice(0, 10),
-        intensity: i === 0 && completedToday ? 3 : intensity
+        date: dateKey,
+        intensity
       });
     }
     return days;

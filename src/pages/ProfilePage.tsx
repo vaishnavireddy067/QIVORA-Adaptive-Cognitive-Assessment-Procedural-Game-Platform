@@ -108,10 +108,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user, onUpdateUser }) 
               <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>Graph Master</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>BFS Shortest Path in Switch</div>
             </div>
-            <div className="glass-panel" style={{ padding: '20px', textAlign: 'center' }}>
+            <div className="glass-panel" style={{ padding: '20px', textAlign: 'center', opacity: user.streakDays >= 3 ? 1 : 0.6 }}>
               <div style={{ fontSize: '2rem', marginBottom: '6px' }}>🔥</div>
               <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>Consistent Mind</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>4-Day Continuous Streak</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                {user.streakDays >= 3 ? `${user.streakDays}-Day Continuous Streak` : 'Requires 3-Day Streak'}
+              </div>
             </div>
           </div>
         </div>

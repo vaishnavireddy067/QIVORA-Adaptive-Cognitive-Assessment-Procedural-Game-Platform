@@ -60,8 +60,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onStartGame,
               </span>
               <span style={{ fontSize: '1.2rem', color: 'var(--text-dim)' }}>/ 100</span>
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#10B981', fontWeight: 700, marginTop: '4px' }}>
-              Top 14% of applicants (86th percentile)
+            <div style={{ fontSize: '0.8rem', color: user.cqScore > 0 ? '#10B981' : 'var(--text-dim)', fontWeight: 700, marginTop: '4px' }}>
+              {user.cqScore > 0 ? `Top ${Math.max(1, 100 - user.cqScore)}% of applicants` : 'Pending initial baseline assessment'}
             </div>
           </div>
 
@@ -70,14 +70,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onStartGame,
               Active Training Streak
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
-              <Flame size={36} fill="#F59E0B" color="#F59E0B" />
-              <span style={{ fontSize: '2.6rem', fontWeight: 900, color: '#FCD34D', fontFamily: 'var(--font-mono)' }}>
+              <Flame size={36} fill={user.streakDays > 0 ? '#F59E0B' : '#64748B'} color={user.streakDays > 0 ? '#F59E0B' : '#64748B'} />
+              <span style={{ fontSize: '2.6rem', fontWeight: 900, color: user.streakDays > 0 ? '#FCD34D' : '#94A3B8', fontFamily: 'var(--font-mono)' }}>
                 {user.streakDays}
               </span>
               <span style={{ fontSize: '1rem', color: 'var(--text-dim)' }}>Days</span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              +15% retention consistency boost
+              {user.streakDays > 0 ? '+15% retention consistency boost' : 'Complete today\'s session to start streak'}
             </div>
           </div>
 

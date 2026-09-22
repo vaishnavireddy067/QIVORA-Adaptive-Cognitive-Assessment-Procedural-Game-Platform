@@ -27,45 +27,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleQuickLogin = (preset: 'vaishnavi' | 'guest') => {
     let profile: UserProfile;
     if (preset === 'vaishnavi') {
+      const existing = getUserProfile();
       profile = {
+        ...existing,
         id: 'usr_vaishnavi_01',
         name: 'Vaishnavi',
         email: 'vaishnavi.anugu@qivora.edu',
-        cqScore: 88,
-        streakDays: 6,
-        testsCompleted: 16,
-        puzzlesSolved: 194,
-        joinedDate: 'September 2026',
-        bestScores: {
-          inductive: 94,
-          deductive: 82,
-          grid: 90,
-          switch: 85,
-          memory: 88,
-          attention: 89,
-          reaction: 81,
-          math: 84
-        }
+        joinedDate: 'September 2026'
       };
     } else {
       profile = {
         id: 'usr_guest_demo',
         name: 'Guest Candidate',
         email: 'guest.candidate@qivora.edu',
-        cqScore: 74,
-        streakDays: 2,
-        testsCompleted: 5,
-        puzzlesSolved: 42,
+        cqScore: 0,
+        streakDays: 0,
+        testsCompleted: 0,
+        puzzlesSolved: 0,
         joinedDate: 'September 2026',
         bestScores: {
-          inductive: 78,
-          deductive: 70,
-          grid: 75,
-          switch: 68,
-          memory: 80,
-          attention: 74,
-          reaction: 72,
-          math: 70
+          inductive: 0,
+          deductive: 0,
+          grid: 0,
+          switch: 0,
+          memory: 0,
+          attention: 0,
+          reaction: 0,
+          math: 0
         }
       };
     }

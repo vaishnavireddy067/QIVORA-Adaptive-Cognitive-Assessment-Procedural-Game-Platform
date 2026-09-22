@@ -5,23 +5,23 @@ const ATTEMPTS_KEY = 'qivora_attempts';
 const ASSESSMENTS_KEY = 'qivora_assessments';
 
 const DEFAULT_USER: UserProfile = {
-  id: 'usr_guest_01',
-  name: 'Alex Mercer',
-  email: 'alex.mercer@assessment.edu',
-  cqScore: 78,
-  streakDays: 4,
-  testsCompleted: 12,
-  puzzlesSolved: 148,
+  id: 'usr_candidate_01',
+  name: 'Candidate',
+  email: 'candidate@qivora.io',
+  cqScore: 0,
+  streakDays: 0,
+  testsCompleted: 0,
+  puzzlesSolved: 0,
   joinedDate: 'September 2026',
   bestScores: {
-    inductive: 82,
-    deductive: 71,
-    grid: 88,
-    switch: 64,
-    memory: 91,
-    attention: 84,
-    reaction: 79,
-    math: 76
+    inductive: 0,
+    deductive: 0,
+    grid: 0,
+    switch: 0,
+    memory: 0,
+    attention: 0,
+    reaction: 0,
+    math: 0
   }
 };
 
