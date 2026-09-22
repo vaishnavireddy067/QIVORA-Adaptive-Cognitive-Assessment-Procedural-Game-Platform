@@ -182,15 +182,21 @@ export const ReactionRenderer: React.FC<ReactionRendererProps> = ({
               height: '320px',
               position: 'relative',
               background: state === 'ready'
-                ? (activeSubtype === 'go_no_go' && !task?.isGoCue ? '#DC2626' : '#16A34A')
+                ? (activeSubtype === 'go_no_go' && !task?.isGoCue ? '#EF4444' : '#10B981')
                 : state === 'early'
-                ? '#991B1B'
+                ? '#FEE2E2'
                 : state === 'waiting'
-                ? '#1E293B'
-                : '#0F172A',
-              borderRadius: '16px',
-              border: '2px solid rgba(0,0,0,0.1)',
-              boxShadow: state === 'ready' ? '0 0 40px rgba(22,163,74,0.4)' : '0 4px 16px rgba(0,0,0,0.2)',
+                ? '#FFFBEB'
+                : '#F8FAFC',
+              borderRadius: '20px',
+              border: state === 'ready'
+                ? (activeSubtype === 'go_no_go' && !task?.isGoCue ? '2.5px solid #DC2626' : '2.5px solid #059669')
+                : state === 'early'
+                ? '2px solid #F87171'
+                : state === 'waiting'
+                ? '2px solid #FCD34D'
+                : '2px solid #E2E8F0',
+              boxShadow: state === 'ready' ? '0 0 32px rgba(16,185,129,0.35)' : '0 2px 10px rgba(0,0,0,0.03)',
               cursor: 'pointer',
               userSelect: 'none',
               display: 'flex',
@@ -198,28 +204,56 @@ export const ReactionRenderer: React.FC<ReactionRendererProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               overflow: 'hidden',
-              transition: 'background 0.08s ease'
+              transition: 'all 0.1s ease'
             }}
           >
             {state === 'idle' && (
-              <div style={{ textAlign: 'center', color: '#CBD5E1' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '6px' }}>
+              <div style={{ textAlign: 'center', color: '#64748B', padding: '20px' }}>
+                <div style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: '#FFFFFF',
+                  border: '2px solid #CBD5E1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 12px auto',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                }}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#0284C7' }} />
+                </div>
+                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1E293B', marginBottom: '4px' }}>
                   Tap Here to Prime Sensor
                 </div>
-                <div style={{ fontSize: '0.82rem', color: '#94A3B8' }}>
+                <div style={{ fontSize: '0.82rem', color: '#64748B' }}>
                   {activeSubtype === 'go_no_go'
-                    ? 'Green Circle = TAP! Red Cross = INHIBIT!'
+                    ? 'Green Target = TAP! Red Cross = INHIBIT!'
                     : 'When the canvas flashes GREEN, tap as fast as possible.'}
                 </div>
               </div>
             )}
 
             {state === 'waiting' && (
-              <div style={{ textAlign: 'center', color: '#FBBF24' }}>
-                <div style={{ fontSize: '1.3rem', fontWeight: 900, letterSpacing: '0.04em' }}>
+              <div style={{ textAlign: 'center', color: '#B45309', padding: '20px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: '#FEF3C7',
+                  border: '2px dashed #F59E0B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 12px auto',
+                  animation: 'spin 4s linear infinite'
+                }}>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#F59E0B' }} />
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '0.02em', color: '#92400E' }}>
                   Wait for Cue...
                 </div>
-                <div style={{ fontSize: '0.82rem', color: '#94A3B8', marginTop: '6px' }}>
+                <div style={{ fontSize: '0.82rem', color: '#B45309', marginTop: '4px' }}>
                   Inhibiting motor response...
                 </div>
               </div>
@@ -238,7 +272,7 @@ export const ReactionRenderer: React.FC<ReactionRendererProps> = ({
                   alignItems: 'center',
                   gap: '6px',
                   pointerEvents: 'none',
-                  animation: 'pulse 1s infinite alternate'
+                  animation: 'pulse 0.8s infinite alternate'
                 }}>
                   {activeSubtype === 'go_no_go' && !task?.isGoCue ? (
                     <>
@@ -248,11 +282,11 @@ export const ReactionRenderer: React.FC<ReactionRendererProps> = ({
                   ) : (
                     <>
                       <div style={{
-                        width: '46px',
-                        height: '46px',
+                        width: '48px',
+                        height: '48px',
                         borderRadius: '50%',
                         background: '#FFFFFF',
-                        boxShadow: '0 0 30px #FFFFFF, 0 0 15px rgba(255,255,255,0.8)',
+                        boxShadow: '0 0 24px #FFFFFF, 0 0 12px rgba(255,255,255,0.8)',
                         border: '3px solid rgba(255,255,255,0.9)'
                       }} />
                       <span style={{

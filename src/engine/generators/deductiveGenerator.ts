@@ -117,9 +117,9 @@ function generateLatinSquareQuestion(difficulty: Difficulty, size: number = 4): 
 }
 
 // ── 2. Positional & Relational Ordering Constraints ──────────────────
-function generateOrderingQuestion(difficulty: Difficulty): DeductiveQuestion {
+function generateOrderingQuestion(difficulty: Difficulty, explicitSlotCount?: number): DeductiveQuestion {
   const qId = 'ded_ord_' + Math.random().toString(36).substring(2, 9);
-  const is5Slot = difficulty === 'hard' || Math.random() > 0.5;
+  const is5Slot = explicitSlotCount !== undefined ? explicitSlotCount === 5 : (difficulty === 'hard');
   const syms: DeductiveSymbol[] = is5Slot
     ? ['circle', 'star', 'cross', 'triangle', 'square']
     : ['circle', 'star', 'cross', 'triangle'];
@@ -368,25 +368,25 @@ export function generateDeductiveQuestion(
   level: number = 2,
   subtypeIndex?: number
 ): DeductiveQuestion {
+  const clampedLevel = Math.max(1, Math.min(5, level));
+  const diff: Difficulty = clampedLevel <= 2 ? 'easy' : clampedLevel <= 4 ? 'medium' : 'hard';
+
   if (subtypeIndex !== undefined) {
-    if (subtypeIndex === 0) return generateConditionalQuestion(difficulty);
-    if (subtypeIndex === 1) return generateOrderingQuestion(difficulty);
-    if (subtypeIndex === 2) return generateOrderingQuestion('hard');
-    if (subtypeIndex === 3) return generateLatinSquareQuestion(difficulty, level >= 4 ? 5 : 4);
+    if (subtypeIndex === 0) return generateConditionalQuestion(diff);
+    if (subtypeIndex === 1) return generateOrderingQuestion(diff, clampedLevel >= 4 ? 5 : 4);
+    if (subtypeIndex === 2) return generateOrderingQuestion('hard', 5);
+    if (subtypeIndex === 3) return generateLatinSquareQuestion(diff, clampedLevel >= 4 ? 5 : 4);
   }
 
-  if (level === 1) {
+  if (clampedLevel === 1) {
     return generateLatinSquareQuestion('easy', 4);
-  } else if (level === 2) {
-    return generateOrderingQuestion('medium');
-  } else if (level === 3) {
+  } else if (clampedLevel === 2) {
+    return generateOrderingQuestion('medium', 4);
+  } else if (clampedLevel === 3) {
     return generateConditionalQuestion('medium');
-  } else if (level === 4) {
+  } else if (clampedLevel === 4) {
     return generateLatinSquareQuestion('hard', 5);
   } else {
-    const roll = Math.random();
-    if (roll < 0.4) return generateLatinSquareQuestion('hard', 5);
-    if (roll < 0.7) return generateOrderingQuestion('hard');
-    return generateConditionalQuestion('hard');
+    return generateOrderingQuestion('hard', 5);
   }
 }

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { GameId } from '../types';
 import { sounds } from '../services/soundEngine';
+import { CognitiveIllustration } from '../components/common/CognitiveIllustrations';
 
 interface LandingPageProps {
   onPlay: (gameId?: GameId) => void;
@@ -25,7 +26,6 @@ interface ConstellationNode {
   id: GameId;
   name: string;
   category: string;
-  icon: string;
   color: string;
   bg: string;
   border: string;
@@ -33,14 +33,14 @@ interface ConstellationNode {
 }
 
 const NODES: ConstellationNode[] = [
-  { id: 'inductive', name: 'Inductive', category: 'Rule Logic', icon: '📐', color: '#B45309', bg: '#FEF3C7', border: '#F59E0B', desc: 'Identify latent geometric rules & sequences' },
-  { id: 'grid', name: 'Matrix', category: 'Spatial', icon: '🟦', color: '#1D4ED8', bg: '#DBEAFE', border: '#3B82F6', desc: 'Raven-style progressive 3×3 matrix completion' },
-  { id: 'switch', name: 'Switch', category: 'Problem Solving', icon: '🔘', color: '#047857', bg: '#D1FAE5', border: '#10B981', desc: 'Graph state toggles & shortest path search' },
-  { id: 'memory', name: 'Memory', category: 'Retention', icon: '🧠', color: '#6D28D9', bg: '#EDE9FE', border: '#8B5CF6', desc: 'Visual-spatial retention & working memory' },
-  { id: 'attention', name: 'Attention', category: 'Vigilance', icon: '👁️', color: '#BE123C', bg: '#FFE4E6', border: '#F43F5E', desc: 'High-density visual anomaly detection' },
-  { id: 'reaction', name: 'Reaction', category: 'Speed', icon: '⚡', color: '#C2410C', bg: '#FFEDD5', border: '#F97316', desc: 'Sub-millisecond impulse response & latency' },
-  { id: 'math', name: 'Math', category: 'Quantitative', icon: '🔢', color: '#0369A1', bg: '#E0F2FE', border: '#0EA5E9', desc: 'Rapid mental arithmetic under time pressure' },
-  { id: 'deductive', name: 'Deductive', category: 'Inference', icon: '💡', color: '#0F766E', bg: '#CCFBF1', border: '#14B8A6', desc: 'Evaluate premise validity & formal syllogisms' }
+  { id: 'inductive', name: 'Inductive', category: 'Rule Logic', color: '#B45309', bg: '#FEF3C7', border: '#F59E0B', desc: 'Identify latent geometric rules & sequences' },
+  { id: 'grid', name: 'Matrix', category: 'Spatial', color: '#1D4ED8', bg: '#DBEAFE', border: '#3B82F6', desc: 'Raven-style progressive 3×3 matrix completion' },
+  { id: 'switch', name: 'Switch', category: 'Problem Solving', color: '#047857', bg: '#D1FAE5', border: '#10B981', desc: 'Graph state toggles & shortest path search' },
+  { id: 'memory', name: 'Memory', category: 'Retention', color: '#6D28D9', bg: '#EDE9FE', border: '#8B5CF6', desc: 'Visual-spatial retention & working memory' },
+  { id: 'attention', name: 'Attention', category: 'Vigilance', color: '#BE123C', bg: '#FFE4E6', border: '#F43F5E', desc: 'High-density visual anomaly detection' },
+  { id: 'reaction', name: 'Reaction', category: 'Speed', color: '#C2410C', bg: '#FFEDD5', border: '#F97316', desc: 'Sub-millisecond impulse response & latency' },
+  { id: 'math', name: 'Math', category: 'Quantitative', color: '#0369A1', bg: '#E0F2FE', border: '#0EA5E9', desc: 'Rapid mental arithmetic under time pressure' },
+  { id: 'deductive', name: 'Deductive', category: 'Inference', color: '#0F766E', bg: '#CCFBF1', border: '#14B8A6', desc: 'Evaluate premise validity & formal syllogisms' }
 ];
 
 export const LandingPage: React.FC<LandingPageProps> = ({
@@ -277,8 +277,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             >
               {/* Sleek Node Circle */}
               <div style={{
-                width: isHovered ? '62px' : '52px',
-                height: isHovered ? '62px' : '52px',
+                width: isHovered ? '64px' : '54px',
+                height: isHovered ? '64px' : '54px',
                 borderRadius: '50%',
                 background: isHovered ? node.bg : '#FFFFFF',
                 border: `2px solid ${isHovered ? node.border : '#121110'}`,
@@ -288,10 +288,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: isHovered ? '1.55rem' : '1.35rem',
                 transition: 'all 0.25s ease'
               }}>
-                {node.icon}
+                <CognitiveIllustration 
+                  gameId={node.id} 
+                  size={isHovered ? 34 : 26} 
+                  color={node.color} 
+                />
               </div>
 
               {/* Clean External Label Below Circle (No overlapping text!) */}
@@ -349,13 +352,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* If a node is hovered: show that node's clean info */}
           {activeNode ? (
             <div style={{ animation: 'floatGentle 3s ease infinite', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '1.8rem', lineHeight: 1 }}>{activeNode.icon}</span>
+              <div style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '12px',
+                background: activeNode.bg,
+                border: `1.5px solid ${activeNode.border}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '4px',
+                boxShadow: `0 2px 8px ${activeNode.border}33`
+              }}>
+                <CognitiveIllustration 
+                  gameId={activeNode.id} 
+                  size={30} 
+                  color={activeNode.color} 
+                />
+              </div>
               <div style={{
                 fontFamily: 'var(--font-poster)',
                 fontSize: '1.25rem',
                 fontWeight: 900,
                 color: 'var(--text-primary)',
-                marginTop: '4px',
+                marginTop: '2px',
                 textTransform: 'uppercase'
               }}>
                 {activeNode.name}

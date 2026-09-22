@@ -99,7 +99,8 @@ export function generateSwitchPuzzle(
   subtypeIndex: number = 0
 ): SwitchTask {
   const pId = Math.random().toString(36).substring(2, 9);
-  const palette = PALETTES[level >= 4 ? 1 : 0];
+  const clampedLevel = Math.max(1, Math.min(5, level));
+  const palette = PALETTES[clampedLevel >= 4 ? 1 : 0];
 
   const inputItems: SwitchItem[] = palette.map((p, idx) => ({
     id: idx + 1,
@@ -109,7 +110,15 @@ export function generateSwitchPuzzle(
   }));
 
   const subtypes: SwitchSubtype[] = ['rule_switch', 'task_switch', 'reverse_rule', 'dual_rule'];
-  const subtype = subtypes[subtypeIndex % subtypes.length];
+  // If subtypeIndex is passed explicitly, use it; otherwise map automatically to level
+  let subtype: SwitchSubtype = subtypes[subtypeIndex % subtypes.length];
+  if (subtypeIndex === 0) {
+    if (clampedLevel === 1) subtype = 'rule_switch';
+    else if (clampedLevel === 2) subtype = 'rule_switch';
+    else if (clampedLevel === 3) subtype = 'reverse_rule';
+    else if (clampedLevel === 4) subtype = 'dual_rule';
+    else subtype = 'dual_rule';
+  }
 
   // Subtype 1: Task Switch (Dynamic rule switching: Sort by Shape vs Color vs Count)
   if (subtype === 'task_switch') {

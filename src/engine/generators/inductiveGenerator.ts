@@ -116,8 +116,14 @@ function makeCell(shape: ShapeSymbol, color: ColorName): GridCell {
 function generateSequenceTask(difficulty: Difficulty, level: number = 1): InductiveQuestion {
   const qId = 'ind_seq_' + Math.random().toString(36).substring(2, 9);
   
-  // 8 distinct mathematical & geometric sequence models
-  const patternType = Math.floor(Math.random() * 8);
+  // Progressive pattern mapping: Level 1 (single rule), Level 2 (shape cycle), Level 3 (multiplicative/inverse), Level 4 (Fibonacci/vertices), Level 5 (Fibonacci + dual toggle + rotation)
+  let eligiblePatterns = [0, 1];
+  if (level === 2) eligiblePatterns = [1, 2, 7];
+  else if (level === 3) eligiblePatterns = [2, 3, 5];
+  else if (level === 4) eligiblePatterns = [3, 4, 6];
+  else if (level >= 5) eligiblePatterns = [4, 5, 6];
+  const patternType = eligiblePatterns[Math.floor(Math.random() * eligiblePatterns.length)];
+
   const baseShape = randOf(SHAPES);
   const baseColor = randOf(COLORS);
   const altColor = randOf(COLORS.filter(c => c !== baseColor));
@@ -1244,19 +1250,21 @@ export function generateInductiveQuestion(
   level: number = 1,
   forcedMode?: InductiveChallengeType
 ): InductiveQuestion {
-  if (forcedMode === 'same_rule_pairs') return generateSameRulePairsTask(difficulty, level);
-  if (forcedMode === 'odd_one_out') return generateOddOneOutTask(difficulty, level);
-  if (forcedMode === 'sequence') return generateSequenceTask(difficulty, level);
-  if (forcedMode === 'transformation') return generateTransformationTask(difficulty, level);
-  if (forcedMode === 'analogy') return generateAnalogyTask(difficulty, level);
-  if (forcedMode === 'scales_clx') return generateScalesClxTask(difficulty, level);
-  if (forcedMode === 'classification') return generateClassificationTask(difficulty, level);
+  const clampedLevel = Math.max(1, Math.min(5, level));
+  const diff: Difficulty = clampedLevel <= 2 ? 'easy' : clampedLevel <= 4 ? 'medium' : 'hard';
 
-  if (level === 1) return generateSameRulePairsTask(difficulty, 1);
-  if (level === 2) return generateOddOneOutTask(difficulty, 2);
-  if (level === 3) return generateSameRulePairsTask(difficulty, 3);
-  if (level === 4) return generateOddOneOutTask(difficulty, 4);
-  if (level === 5) return generateSequenceTask(difficulty, level);
-  return generateSameRulePairsTask(difficulty, level);
+  if (forcedMode === 'same_rule_pairs') return generateSameRulePairsTask(diff, clampedLevel);
+  if (forcedMode === 'odd_one_out') return generateOddOneOutTask(diff, clampedLevel);
+  if (forcedMode === 'sequence') return generateSequenceTask(diff, clampedLevel);
+  if (forcedMode === 'transformation') return generateTransformationTask(diff, clampedLevel);
+  if (forcedMode === 'analogy') return generateAnalogyTask(diff, clampedLevel);
+  if (forcedMode === 'scales_clx') return generateScalesClxTask(diff, clampedLevel);
+  if (forcedMode === 'classification') return generateClassificationTask(diff, clampedLevel);
+
+  if (clampedLevel === 1) return generateSequenceTask(diff, 1);
+  if (clampedLevel === 2) return generateAnalogyTask(diff, 2);
+  if (clampedLevel === 3) return generateTransformationTask(diff, 3);
+  if (clampedLevel === 4) return generateOddOneOutTask(diff, 4);
+  return generateScalesClxTask(diff, 5);
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { GameId } from '../types';
+import { CognitiveIllustration } from '../components/common/CognitiveIllustrations';
 
 interface GamesLobbyPageProps {
   onSelectGame: (gameId: GameId) => void;
@@ -36,7 +37,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '01',
       badgeBg: '#F59E0B',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>💡</span>,
+      badgeIcon: <CognitiveIllustration gameId="inductive" size={16} color="#FFFFFF" />,
       title: 'Inductive Reasoning',
       desc: 'Pattern extrapolation & latent rule discovery.',
       subtypes: ['Sequence', 'Matrix', 'Analogy', 'Rule Discovery'],
@@ -77,7 +78,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '02',
       badgeBg: '#0EA5E9',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>🔍</span>,
+      badgeIcon: <CognitiveIllustration gameId="deductive" size={16} color="#FFFFFF" />,
       title: 'Deductive Reasoning',
       desc: 'Constraint satisfaction & formal logic.',
       subtypes: ['Conditional Logic', 'Ordering', 'Constraints', 'Logical Elimination'],
@@ -119,11 +120,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '03',
       badgeBg: '#0284C7',
       badgeColor: '#FFFFFF',
-      badgeIcon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm-11 11h7v7H3v-7zm11 0h7v7h-7v-7z" />
-        </svg>
-      ),
+      badgeIcon: <CognitiveIllustration gameId="grid" size={16} color="#FFFFFF" />,
       title: 'Spatial Reasoning',
       desc: 'Mental rotation, symmetry & spatial grids.',
       subtypes: ['Grid', 'Rotation', 'Mirror', 'Symmetry', 'Transformation'],
@@ -172,7 +169,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '04',
       badgeBg: '#F97316',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>⇄</span>,
+      badgeIcon: <CognitiveIllustration gameId="switch" size={16} color="#FFFFFF" />,
       title: 'Cognitive Flexibility',
       desc: 'Task-switching & pipeline transformations.',
       subtypes: ['Rule Switch', 'Task Switch', 'Reverse Rule', 'Dual Rule'],
@@ -214,7 +211,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '05',
       badgeBg: '#14B8A6',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>🧠</span>,
+      badgeIcon: <CognitiveIllustration gameId="memory" size={16} color="#FFFFFF" />,
       title: 'Working Memory',
       desc: 'Dual-stage recall under active interference.',
       subtypes: ['Digit', 'Spatial', 'Sequence', 'Delayed', 'Interference'],
@@ -252,7 +249,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '06',
       badgeBg: '#A855F7',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>👁️</span>,
+      badgeIcon: <CognitiveIllustration gameId="attention" size={16} color="#FFFFFF" />,
       title: 'Attention & Focus',
       desc: 'Selective visual scanning & distractor filtering.',
       subtypes: ['Target Detection', 'Visual Search', 'Distractors', 'Change Detection'],
@@ -298,7 +295,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '07',
       badgeBg: '#EAB308',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>⚡</span>,
+      badgeIcon: <CognitiveIllustration gameId="reaction" size={16} color="#FFFFFF" />,
       title: 'Processing Speed',
       desc: 'Rapid categorization & reaction latency.',
       subtypes: ['Reaction', 'Rapid Match', 'Go/No-Go', 'Comparison'],
@@ -334,7 +331,7 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       num: '08',
       badgeBg: '#EC4899',
       badgeColor: '#FFFFFF',
-      badgeIcon: <span>🏃</span>,
+      badgeIcon: <CognitiveIllustration gameId="motion" size={16} color="#FFFFFF" />,
       title: 'Motion & Prediction',
       desc: 'Dynamic trajectory tracking & collision timing.',
       subtypes: ['Tracking', 'Trajectory', 'Prediction', 'Collision'],

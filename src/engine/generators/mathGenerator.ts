@@ -130,12 +130,11 @@ function generateDigitChallenge(
   level: number = 2
 ): MathTask {
   const qId = 'math_dc_' + Math.random().toString(36).substring(2, 9);
-  const matchingTemplates = DIGIT_TEMPLATES.filter(
-    t => t.level === level || t.difficulty === difficulty
-  );
+  const clampedLevel = Math.max(1, Math.min(5, level));
+  const matchingTemplates = DIGIT_TEMPLATES.filter(t => t.level === clampedLevel);
   const template = matchingTemplates.length > 0 
     ? matchingTemplates[Math.floor(Math.random() * matchingTemplates.length)]
-    : DIGIT_TEMPLATES[0];
+    : DIGIT_TEMPLATES.find(t => t.level === clampedLevel) || DIGIT_TEMPLATES[0];
 
   const totalSlots = template.operators.length + 1;
   const allDigits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -316,7 +315,15 @@ function generateNumberSeriesQuestion(level: number): MathTask {
     }
   ];
 
-  const chosenModel = models[Math.floor(Math.random() * models.length)];
+  // Map level to model difficulty
+  let eligibleModels = models;
+  if (level === 1) eligibleModels = [models[0], models[1]];
+  else if (level === 2) eligibleModels = [models[1], models[2], models[3]];
+  else if (level === 3) eligibleModels = [models[3], models[4], models[6]];
+  else if (level === 4) eligibleModels = [models[4], models[5], models[7]];
+  else eligibleModels = [models[7], models[8], models[9]];
+
+  const chosenModel = eligibleModels[Math.floor(Math.random() * eligibleModels.length)];
   const { seq, answer, ruleText } = chosenModel();
 
   const distractors = new Set<number>();
@@ -335,7 +342,7 @@ function generateNumberSeriesQuestion(level: number): MathTask {
     subtypeName: 'Number Series & Progression',
     prompt: 'Determine the latent mathematical rule and identify the missing number in the sequence:',
     level,
-    difficulty: 'medium',
+    difficulty: level <= 2 ? 'easy' : level <= 4 ? 'medium' : 'hard',
     operators: ['+'],
     target: answer,
     totalSlots: 0,
@@ -358,7 +365,21 @@ function generateComparisonQuestion(level: number): MathTask {
   const qId = 'math_rc_' + Math.random().toString(36).substring(2, 9);
   
   const comparisonGenerators = [
-    // Percentages vs Fractions
+    // 0. Simple product comparison (Level 1)
+    () => {
+      const a = Math.floor(Math.random() * 8) + 12;
+      const b = Math.floor(Math.random() * 6) + 7;
+      const valA = a * b;
+      const targetB = valA + (Math.random() > 0.5 ? 8 : -8);
+      return {
+        expA: `${a} × ${b}`,
+        valA,
+        expB: `${targetB}`,
+        valB: targetB,
+        explanation: `${a} × ${b} = ${valA}. Quantity B is ${targetB}. ${valA > targetB ? 'Quantity A > Quantity B' : 'Quantity B > Quantity A'}.`
+      };
+    },
+    // 1. Percentages vs Fractions (Level 2-3)
     () => {
       const p = 15;
       const baseA = 800;
@@ -372,7 +393,7 @@ function generateComparisonQuestion(level: number): MathTask {
         explanation: `${p}% of ${baseA} = ${valA}. ¼ of 500 = ${fracB}. Hence, Quantity B (${fracB}) > Quantity A (${valA}).`
       };
     },
-    // Exponent vs Product
+    // 2. Exponent vs Product (Level 3-4)
     () => {
       const base = 16;
       const valA = base * base - 25; // 231
@@ -385,7 +406,7 @@ function generateComparisonQuestion(level: number): MathTask {
         explanation: `${base}² - 25 = ${base * base} - 25 = ${valA}. 15 × 15 = ${valB}. Hence, Quantity A > Quantity B.`
       };
     },
-    // Division with addition vs Multiplication with subtraction
+    // 3. Division with addition vs Multiplication with subtraction (Level 4)
     () => {
       const a = 144, b = 12, c = 19;
       const valA = a / b + c; // 31
@@ -399,7 +420,7 @@ function generateComparisonQuestion(level: number): MathTask {
         explanation: `${a} ÷ ${b} + ${c} = ${valA}. ${d} × ${e} - ${f} = ${valB}. Both quantities are exactly Equal.`
       };
     },
-    // Square Roots vs Power Fractions
+    // 4. Square Roots vs Power Fractions (Level 4-5)
     () => {
       const valA = Math.sqrt(625) + 15; // 25 + 15 = 40
       const valB = Math.pow(8, 2) - 26; // 64 - 26 = 38
@@ -411,7 +432,7 @@ function generateComparisonQuestion(level: number): MathTask {
         explanation: `√625 + 15 = 25 + 15 = 40. 8² - 26 = 64 - 26 = 38. Quantity A (40) > Quantity B (38).`
       };
     },
-    // Multiplicative Factors
+    // 5. Multiplicative Factors with Close Margins (Level 5)
     () => {
       const valA = 45 * 18; // 810
       const valB = 36 * 22; // 792
@@ -425,7 +446,14 @@ function generateComparisonQuestion(level: number): MathTask {
     }
   ];
 
-  const item = comparisonGenerators[Math.floor(Math.random() * comparisonGenerators.length)]();
+  let eligibleComps = comparisonGenerators;
+  if (level === 1) eligibleComps = [comparisonGenerators[0]];
+  else if (level === 2) eligibleComps = [comparisonGenerators[0], comparisonGenerators[1]];
+  else if (level === 3) eligibleComps = [comparisonGenerators[1], comparisonGenerators[2]];
+  else if (level === 4) eligibleComps = [comparisonGenerators[2], comparisonGenerators[3], comparisonGenerators[4]];
+  else eligibleComps = [comparisonGenerators[4], comparisonGenerators[5]];
+
+  const item = eligibleComps[Math.floor(Math.random() * eligibleComps.length)]();
 
   const comparisonOptions = [
     'Quantity A is strictly greater',
@@ -444,7 +472,7 @@ function generateComparisonQuestion(level: number): MathTask {
     subtypeName: 'Numerical Estimation & Comparison',
     prompt: 'Compare Quantity A and Quantity B without using a calculator:',
     level,
-    difficulty: 'medium',
+    difficulty: level <= 2 ? 'easy' : level <= 4 ? 'medium' : 'hard',
     operators: ['+'],
     target: item.valA,
     totalSlots: 0,
@@ -468,26 +496,20 @@ function generateComparisonQuestion(level: number): MathTask {
 // ── Master Math Question Generator ───────────────────────────────────
 export function generateMathQuestion(
   difficulty: Difficulty = 'medium',
-  level: number = 2,
+  level: number = 1,
   subtypeIndex?: number
 ): MathTask {
+  const clampedLevel = Math.max(1, Math.min(5, level));
+  const diff: Difficulty = clampedLevel <= 2 ? 'easy' : clampedLevel <= 4 ? 'medium' : 'hard';
+
   if (subtypeIndex !== undefined) {
-    if (subtypeIndex === 0) return generateDigitChallenge(difficulty, level);
-    if (subtypeIndex === 1) return generateNumberSeriesQuestion(level);
-    if (subtypeIndex === 2) return generateComparisonQuestion(level);
+    if (subtypeIndex === 0) return generateDigitChallenge(diff, clampedLevel);
+    if (subtypeIndex === 1) return generateNumberSeriesQuestion(clampedLevel);
+    if (subtypeIndex === 2) return generateComparisonQuestion(clampedLevel);
   }
 
-  if (level === 1) {
-    return generateDigitChallenge('easy', 1);
-  } else if (level === 2) {
-    return generateNumberSeriesQuestion(2);
-  } else if (level === 3) {
-    return generateComparisonQuestion(3);
-  } else if (level === 4) {
-    return generateDigitChallenge('medium', 2);
-  } else {
-    return generateDigitChallenge('hard', 3);
-  }
+  // Strictly progressive level scaling
+  return generateDigitChallenge(diff, clampedLevel);
 }
 
 export function validateMathSubmission(

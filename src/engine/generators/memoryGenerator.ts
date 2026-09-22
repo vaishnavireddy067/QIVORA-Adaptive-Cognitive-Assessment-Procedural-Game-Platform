@@ -133,9 +133,11 @@ export function generateMemoryPuzzle(
   ];
   const subtype = subtypes[subtypeIndex % subtypes.length];
 
+  const clampedLevel = Math.max(1, Math.min(5, level));
   // Sequence length based on level:
-  // Level 1: 3-4 items, Level 2: 4-5 items, Level 3: 5-6 items, Level 4: 6-7 items, Level 5: 7-8 items
-  const seqLength = level + 3;
+  // Level 1: 3 items, Level 2: 4 items, Level 3: 5 items, Level 4: 6 items, Level 5: 7 items
+  const seqLength = clampedLevel + 2;
+  const dotDurationMs = clampedLevel === 1 ? 1800 : clampedLevel === 2 ? 1500 : clampedLevel === 3 ? 1200 : clampedLevel === 4 ? 1000 : 800;
 
   // Subtype A: Sequence Recall (Symbols) ⭐
   if (subtype === 'sequence_recall') {

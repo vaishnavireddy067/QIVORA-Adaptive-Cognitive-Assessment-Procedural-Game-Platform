@@ -27,6 +27,7 @@ import { MotionRenderer } from './MotionRenderer';
 import { ColorGridRenderer } from './ColorGridRenderer';
 import { sounds } from '../../services/soundEngine';
 import { recordGameAttempt } from '../../services/storage';
+import { CognitiveIllustration } from '../common/CognitiveIllustrations';
 
 // ─── Types ────────────────────────────────────────────────────────
 export type Stage =
@@ -341,34 +342,54 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 40px',
-          height: 60,
-          background: '#141312',
-          color: '#FFFFFF',
+          padding: '0 36px',
+          height: 64,
+          background: '#FFFFFF',
+          borderBottom: '1.5px solid #ECE7DD',
           position: 'sticky',
           top: 0,
           zIndex: 100,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#FF5733' }} />
-            <span style={{ fontWeight: 900, letterSpacing: '-0.02em', fontSize: '1rem' }}>QIVORA ASSESSMENT</span>
-            <span style={{ color: '#94A3B8', fontSize: '0.82rem' }}>// {meta?.title}</span>
+            <div style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: '#FFF1EA',
+              border: '1px solid #FED7AA',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <CognitiveIllustration gameId={gameId} size={20} color="#FF3B20" />
+            </div>
+            <span style={{ fontWeight: 900, letterSpacing: '-0.02em', fontSize: '1rem', color: '#121110', fontFamily: 'var(--font-poster)' }}>
+              QIVORA ASSESSMENT
+            </span>
+            <span style={{ color: '#64748B', fontSize: '0.82rem', fontFamily: 'var(--font-mono)' }}>
+              // {meta?.title}
+            </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            <span style={{ fontSize: '0.85rem', color: '#94A3B8', fontWeight: 700 }}>
-              Task {assessmentIndex + 1} of {TOTAL_ASSESSMENT_TASKS}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+            <span style={{ fontSize: '0.82rem', color: '#64748B', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>
+              TASK {assessmentIndex + 1}/{TOTAL_ASSESSMENT_TASKS}
             </span>
             <span style={{
-              fontSize: '1rem',
+              fontSize: '0.95rem',
               fontWeight: 900,
-              fontFamily: 'monospace',
-              color: timeLeft <= 5 ? '#EF4444' : '#FBBF24',
-              background: 'rgba(255,255,255,0.08)',
-              padding: '4px 12px',
-              borderRadius: '8px'
+              fontFamily: 'var(--font-mono)',
+              color: timeLeft <= 5 ? '#DC2626' : '#D97706',
+              background: timeLeft <= 5 ? '#FEE2E2' : '#FEF3C7',
+              border: `1.5px solid ${timeLeft <= 5 ? '#FCA5A5' : '#FDE68A'}`,
+              padding: '4px 14px',
+              borderRadius: '9999px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6
             }}>
-              ⏱ {timeLeft}s
+              <span>⏱</span>
+              <span>{timeLeft}s</span>
             </span>
             <button
               onClick={() => {
@@ -377,12 +398,22 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
               }}
               style={{
                 background: 'transparent',
-                border: '1px solid #475569',
-                color: '#94A3B8',
-                padding: '4px 10px',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                cursor: 'pointer'
+                border: '1.5px solid #CBD5E1',
+                color: '#64748B',
+                padding: '5px 12px',
+                borderRadius: '8px',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = '#121110';
+                e.currentTarget.style.color = '#121110';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = '#CBD5E1';
+                e.currentTarget.style.color = '#64748B';
               }}
             >
               End Test
@@ -397,17 +428,33 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
         {/* ━━━━━━━━ STAGE 1: HOW IT WORKS ━━━━━━━━━━━━━━━━━━━━━━ */}
         {stage === 'rules' && (
           <div style={{ maxWidth: 580, width: '100%', display: 'flex', flexDirection: 'column', gap: 22 }}>
-            <div>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#9CA3AF', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>
-                COGNITIVE ARCHITECTURE &amp; ASSESSMENT RULES
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{
+                width: 58,
+                height: 58,
+                borderRadius: 16,
+                background: '#FFFFFF',
+                border: '2px solid #E2DBCF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                flexShrink: 0
+              }}>
+                <CognitiveIllustration gameId={gameId} size={36} color="#FF3B20" />
               </div>
-              <h1 style={{ fontSize: '2.2rem', fontWeight: 950, color: '#141312', letterSpacing: '-0.03em', margin: '0 0 8px 0', fontFamily: "'Syne', sans-serif" }}>
-                {meta?.title}
-              </h1>
-              <p style={{ fontSize: '1rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
-                {meta?.description}
-              </p>
+              <div>
+                <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#9CA3AF', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 2 }}>
+                  COGNITIVE ARCHITECTURE &amp; ASSESSMENT RULES
+                </div>
+                <h1 style={{ fontSize: '2rem', fontWeight: 950, color: '#141312', letterSpacing: '-0.03em', margin: 0, fontFamily: "'Syne', sans-serif" }}>
+                  {meta?.title}
+                </h1>
+              </div>
             </div>
+            <p style={{ fontSize: '0.98rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+              {meta?.description}
+            </p>
 
             <div style={{
               background: '#FFFFFF',
@@ -1314,7 +1361,19 @@ const CognitivePerformanceReview: React.FC<{
         alignItems: 'center',
         gap: 14
       }}>
-        <div style={{ fontSize: '1.8rem' }}>🎯</div>
+        <div style={{
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          background: '#FFFFFF',
+          border: '1px solid #E2DBCF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0
+        }}>
+          <CognitiveIllustration gameId={gameId} size={24} color="#FF3B20" />
+        </div>
         <div>
           <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#9CA3AF', textTransform: 'uppercase' }}>
             Recommended Next Step
