@@ -646,8 +646,8 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
                   <span style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: '#A1A1AA' }}>
                     ⤳ INDUCTIVE / DEMO
                   </span>
-                  <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: '#71717A' }}>
-                    01 / 04
+                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#4ADE80', background: 'rgba(74, 222, 128, 0.12)', padding: '2px 8px', borderRadius: '10px' }}>
+                    AI SOLVER
                   </span>
                 </div>
 
@@ -1203,15 +1203,12 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
                   }}
                 >
                   <div>
-                    {/* Header: Num and Icon */}
+                    {/* Header: Icon and Placement Badge */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: '#A1A1AA' }}>
-                          {game.num}
-                        </span>
                         <div style={{
-                          width: '28px',
-                          height: '28px',
+                          width: '32px',
+                          height: '32px',
                           borderRadius: '8px',
                           background: '#27272A',
                           display: 'flex',

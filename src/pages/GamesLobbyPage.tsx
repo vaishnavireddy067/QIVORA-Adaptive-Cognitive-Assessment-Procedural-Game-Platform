@@ -787,26 +787,18 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
               }}
             >
               <div>
-                {/* Top Number Pill and Icon */}
+                {/* Top Icon Badge */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    color: '#6B7280',
-                    fontFamily: 'monospace'
-                  }}>
-                    {game.num}
-                  </span>
                   <div style={{
-                    width: '26px',
-                    height: '26px',
+                    width: '32px',
+                    height: '32px',
                     borderRadius: '8px',
                     background: game.badgeBg,
                     color: game.badgeColor,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '0.8rem',
+                    fontSize: '0.85rem',
                     fontWeight: 800
                   }}>
                     {game.badgeIcon}
