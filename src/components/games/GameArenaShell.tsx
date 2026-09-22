@@ -292,31 +292,44 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 36px',
-          height: 64,
+          padding: '0 14px',
+          minHeight: 56,
           background: '#FFFFFF',
           borderBottom: '1.5px solid #ECE7DD',
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          gap: 16,
+          gap: 10,
         }}>
           <button onClick={onBack} style={{
-            padding: '6px 14px',
+            padding: '5px 10px',
             background: 'transparent',
             border: '1.5px solid #D1D5DB',
             borderRadius: 20,
             fontWeight: 800,
-            fontSize: '0.82rem',
+            fontSize: '0.78rem',
             cursor: 'pointer',
             color: '#374151',
-            display: 'flex', alignItems: 'center', gap: 6,
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 4,
+            flexShrink: 0
           }}>
-            ← All Games
+            ← Back
           </button>
 
-          {/* Stage pills */}
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center', overflowX: 'auto' }}>
+          {/* Stage pills with smooth horizontal touch scroll */}
+          <div 
+            className="touch-scroll-x"
+            style={{ 
+              display: 'flex', 
+              gap: 4, 
+              alignItems: 'center', 
+              overflowX: 'auto',
+              maxWidth: 'calc(100vw - 120px)',
+              padding: '4px 0'
+            }}
+          >
             {stages.map((st, idx) => (
               <React.Fragment key={st.id}>
                 <StagePill
@@ -327,12 +340,12 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
                     if (idx <= currentStageIndex) setStage(st.id);
                   }}
                 />
-                {idx < stages.length - 1 && <span style={{ color: '#CBD5E1', fontSize: '0.8rem' }}>›</span>}
+                {idx < stages.length - 1 && <span style={{ color: '#CBD5E1', fontSize: '0.75rem', flexShrink: 0 }}>›</span>}
               </React.Fragment>
             ))}
           </div>
 
-          <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6B7280' }}>
+          <div className="desktop-nav" style={{ fontSize: '0.82rem', fontWeight: 800, color: '#6B7280', flexShrink: 0 }}>
             {meta?.title || gameId}
           </div>
         </div>
@@ -342,8 +355,8 @@ export const GameArenaShell: React.FC<GameArenaShellProps> = ({ gameId, onBack, 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 36px',
-          height: 64,
+          padding: '0 16px',
+          minHeight: 56,
           background: '#FFFFFF',
           borderBottom: '1.5px solid #ECE7DD',
           position: 'sticky',

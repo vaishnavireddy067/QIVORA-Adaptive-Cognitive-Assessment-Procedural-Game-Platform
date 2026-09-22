@@ -23,7 +23,9 @@ import {
   Swords,
   Flame,
   Award,
-  Brain
+  Brain,
+  Menu,
+  X
 } from 'lucide-react';
 import { sounds } from '../../services/soundEngine';
 
@@ -52,80 +54,101 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDemoHovered, setIsDemoHovered] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const displayName = userName || 'Vaishnavi';
 
+  const handleTabChange = (tab: string) => {
+    sounds.playClick();
+    setIsMobileNavOpen(false);
+    onNavigateTab(tab);
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      minHeight: '100vh',
-      background: '#FBF9F5',
-      color: '#121110',
-      fontFamily: 'var(--font-body)'
-    }}>
+    <div className="dashboard-layout">
       {/* ============================================================ */}
-      {/* 1. LEFT SIDEBAR                                              */}
+      {/* 1. SIDEBAR (RESPONSIVE ON MOBILE)                            */}
       {/* ============================================================ */}
-      <aside style={{
-        width: '240px',
-        borderRight: '1.5px solid #EAE6DF',
-        background: '#FAF8F3',
-        padding: '24px 18px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        flexShrink: 0
-      }}>
-        {/* Top: Logo & Nav */}
+      <aside className="dashboard-sidebar">
+        {/* Top: Logo & Mobile Toggle */}
         <div>
-          {/* Brand Logo */}
-          <div 
-            onClick={() => {
-              sounds.playClick();
-              onNavigateTab('landing');
-            }}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', paddingLeft: '8px', cursor: 'pointer' }}
-          >
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: '#FF3B20',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 2px 6px rgba(255, 59, 32, 0.3)'
-            }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FFFFFF' }} />
-            </div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1 }}>
-                QIVORA
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+            paddingLeft: '4px'
+          }}>
+            {/* Brand Logo */}
+            <div 
+              onClick={() => handleTabChange('landing')}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+            >
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: '#FF3B20',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 6px rgba(255, 59, 32, 0.3)'
+              }}>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FFFFFF' }} />
               </div>
-              <div style={{ fontSize: '0.62rem', fontWeight: 800, color: '#A8A29E', letterSpacing: '0.12em', marginTop: '2px' }}>
-                PLAY · THINK · GROW
+              <div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                  QIVORA
+                </div>
+                <div style={{ fontSize: '0.62rem', fontWeight: 800, color: '#A8A29E', letterSpacing: '0.12em', marginTop: '2px' }}>
+                  PLAY · THINK · GROW
+                </div>
               </div>
             </div>
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              className="mobile-menu-btn"
+              onClick={() => {
+                sounds.playClick();
+                setIsMobileNavOpen(!isMobileNavOpen);
+              }}
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: '8px',
+                background: '#FFFFFF',
+                border: '1.5px solid var(--border-ink)',
+                boxShadow: '2px 2px 0px #121110',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: 'var(--text-primary)'
+              }}
+            >
+              {isMobileNavOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
 
           {/* Navigation Links */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <nav 
+            className={`dashboard-nav-links ${isMobileNavOpen ? 'mobile-open' : 'desktop-nav'}`}
+            style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          >
             <button
-              onClick={() => {
-                sounds.playClick();
-                onNavigateTab('landing');
-              }}
+              onClick={() => handleTabChange('landing')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'landing' ? '#FDECE8' : 'transparent',
                 color: activeTab === 'landing' ? '#F05438' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
@@ -135,26 +158,26 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
               <span>Orbit (Landing)</span>
             </button>
             <button
-              onClick={() => onNavigateTab('home')}
+              onClick={() => handleTabChange('home')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'home' || activeTab === 'dashboard' ? '#FDECE8' : 'transparent',
                 color: activeTab === 'home' || activeTab === 'dashboard' ? '#F05438' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
               }}
             >
               <Home size={18} color={activeTab === 'home' || activeTab === 'dashboard' ? '#F05438' : '#78716C'} />
-              <span>Home</span>
+              <span>Dashboard Home</span>
             </button>
 
             <button
@@ -184,8 +207,32 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
             </button>
 
             <button
+              onClick={() => handleTabChange('games')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                width: '100%',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                border: 'none',
+                background: activeTab === 'games' || activeTab === 'play' ? '#FDECE8' : 'transparent',
+                color: activeTab === 'games' || activeTab === 'play' ? '#F05438' : '#57534E',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <Gamepad2 size={18} color={activeTab === 'games' || activeTab === 'play' ? '#F05438' : '#78716C'} />
+              <span>Games</span>
+            </button>
+
+            <button
               onClick={() => {
                 sounds.playClick();
+                setIsMobileNavOpen(false);
                 if (onOpenDuel) onOpenDuel();
                 else onNavigateTab('duel');
               }}
@@ -194,13 +241,13 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'duel' ? '#FEF3C7' : 'transparent',
                 color: activeTab === 'duel' ? '#D97706' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
@@ -213,6 +260,7 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
             <button
               onClick={() => {
                 sounds.playClick();
+                setIsMobileNavOpen(false);
                 if (onOpenDailyDrill) onOpenDailyDrill();
               }}
               style={{
@@ -220,13 +268,13 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: '#FFF7ED',
                 color: '#EA580C',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
@@ -237,19 +285,19 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
             </button>
 
             <button
-              onClick={() => onNavigateTab('practice')}
+              onClick={() => handleTabChange('practice')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'practice' ? '#FDECE8' : 'transparent',
                 color: activeTab === 'practice' ? '#F05438' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
@@ -260,19 +308,19 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
             </button>
 
             <button
-              onClick={() => onNavigateTab('test')}
+              onClick={() => handleTabChange('test')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'test' ? '#FDECE8' : 'transparent',
                 color: activeTab === 'test' ? '#F05438' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
@@ -283,32 +331,32 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
             </button>
 
             <button
-              onClick={() => onNavigateTab('results')}
+              onClick={() => handleTabChange('results')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 width: '100%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: '12px',
                 border: 'none',
                 background: activeTab === 'results' ? '#FDECE8' : 'transparent',
                 color: activeTab === 'results' ? '#F05438' : '#57534E',
                 fontWeight: 800,
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
               }}
             >
               <BarChart3 size={18} color={activeTab === 'results' ? '#F05438' : '#78716C'} />
-              <span>Results</span>
+              <span>Results & Analytics</span>
             </button>
           </nav>
         </div>
 
-        {/* Bottom Progress Card matching Image 1 */}
-        <div style={{ padding: '0 6px' }}>
+        {/* Bottom Progress Card (Desktop only) */}
+        <div className="desktop-nav" style={{ padding: '0 6px', flexDirection: 'column' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 900, color: '#A8A29E', letterSpacing: '0.08em', marginBottom: '12px' }}>
             YOUR PROGRESS
           </div>
@@ -364,7 +412,7 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
       {/* ============================================================ */}
       {/* 2. MAIN DASHBOARD CONTENT AREA                               */}
       {/* ============================================================ */}
-      <main style={{ flex: 1, padding: '24px 36px 60px 36px', overflowY: 'auto' }}>
+      <main className="dashboard-main">
         
         {/* Top Header Bar (Search, Notifications, Profile) */}
         <header style={{

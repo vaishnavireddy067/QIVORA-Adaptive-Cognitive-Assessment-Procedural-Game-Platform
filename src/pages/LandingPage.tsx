@@ -42,7 +42,6 @@ const NODES: ConstellationNode[] = [
   { id: 'math', name: 'Math', category: 'Quantitative', color: '#0369A1', bg: '#E0F2FE', border: '#0EA5E9', desc: 'Rapid mental arithmetic under time pressure' },
   { id: 'deductive', name: 'Deductive', category: 'Inference', color: '#0F766E', bg: '#CCFBF1', border: '#14B8A6', desc: 'Evaluate premise validity & formal syllogisms' }
 ];
-
 export const LandingPage: React.FC<LandingPageProps> = ({
   onPlay,
   onTakeTest,
@@ -52,6 +51,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [rotationAngle, setRotationAngle] = useState(0);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 640;
+  const isTablet = windowWidth < 900;
+  const radius = isMobile ? 122 : isTablet ? 170 : 230;
+  const stageWidth = isMobile ? 320 : isTablet ? 460 : 640;
+  const stageHeight = isMobile ? 320 : isTablet ? 460 : 600;
+  const viewBox = isMobile ? "-160 -160 320 320" : isTablet ? "-230 -230 460 460" : "-320 -300 640 600";
+  const coreSize = isMobile ? 132 : isTablet ? 175 : 230;
 
   // Smooth continuous rotation using requestAnimationFrame
   useEffect(() => {
@@ -73,17 +89,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   }, [isRotating, hoveredIdx, speedMultiplier]);
 
   const activeNode = hoveredIdx !== null ? NODES[hoveredIdx] : null;
-  const radius = 230; // Clean, compact orbital radius
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 70px)',
+      minHeight: 'calc(100vh - 64px)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
-      padding: '20px',
+      padding: isMobile ? '12px 8px 24px' : '20px',
       overflow: 'hidden',
       background: 'radial-gradient(circle at 50% 50%, #FAF8F5 0%, #F5EFE6 100%)'
     }}>
@@ -105,31 +120,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginBottom: '16px'
+        marginBottom: isMobile ? '8px' : '16px'
       }}>
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '4px 14px',
+          gap: '6px',
+          padding: '3px 10px',
           borderRadius: '9999px',
           background: 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(8px)',
           border: '1.5px solid #E2DBCF',
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          fontSize: '0.74rem',
+          fontSize: isMobile ? '0.65rem' : '0.74rem',
           fontWeight: 800,
           fontFamily: 'var(--font-mono)',
           color: 'var(--text-secondary)'
         }}>
           <span style={{
-            width: '7px',
-            height: '7px',
+            width: '6px',
+            height: '6px',
             borderRadius: '50%',
             background: 'var(--accent-vermillion)',
             boxShadow: '0 0 6px rgba(255,59,32,0.8)'
           }} />
-          <span>NEURAL MATRIX // 8 CONNECTED COGNITIVE NODES</span>
+          <span>NEURAL MATRIX // 8 COGNITIVE NODES</span>
         </div>
       </div>
 
@@ -138,8 +153,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       ──────────────────────────────────────────────────────────── */}
       <div style={{
         position: 'relative',
-        width: '640px',
-        height: '600px',
+        width: `${stageWidth}px`,
+        height: `${stageHeight}px`,
+        maxWidth: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -155,7 +171,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             pointerEvents: 'none',
             overflow: 'visible'
           }}
-          viewBox="-320 -300 640 600"
+          viewBox={viewBox}
         >
           {/* Outer Orbit Guide Ring */}
           <circle
@@ -226,7 +242,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   strokeWidth={isHovered ? '2.5' : '1.2'}
                   opacity={isHovered ? '1' : '0.7'}
                 />
-                {/* Subtle Traveling Signal Dot on Hover */}
                 {isHovered && (
                   <circle
                     cx={x * 0.55}
@@ -249,6 +264,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
           const isHovered = hoveredIdx === idx;
+          const nodeWidth = isMobile ? (isHovered ? 44 : 36) : (isHovered ? 64 : 54);
+          const iconSize = isMobile ? (isHovered ? 22 : 18) : (isHovered ? 34 : 26);
 
           return (
             <div
@@ -277,14 +294,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             >
               {/* Sleek Node Circle */}
               <div style={{
-                width: isHovered ? '64px' : '54px',
-                height: isHovered ? '64px' : '54px',
+                width: `${nodeWidth}px`,
+                height: `${nodeWidth}px`,
                 borderRadius: '50%',
                 background: isHovered ? node.bg : '#FFFFFF',
                 border: `2px solid ${isHovered ? node.border : '#121110'}`,
                 boxShadow: isHovered 
-                  ? `0 0 16px ${node.border}66, 3px 3px 0px #121110` 
-                  : '2px 2px 0px #121110',
+                  ? `0 0 14px ${node.border}66, 2px 2px 0px #121110` 
+                  : '1.5px 1.5px 0px #121110',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -292,20 +309,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               }}>
                 <CognitiveIllustration 
                   gameId={node.id} 
-                  size={isHovered ? 34 : 26} 
+                  size={iconSize} 
                   color={node.color} 
                 />
               </div>
 
-              {/* Clean External Label Below Circle (No overlapping text!) */}
+              {/* Clean External Label */}
               <div style={{
-                marginTop: '6px',
-                padding: '2px 8px',
+                marginTop: isMobile ? '3px' : '6px',
+                padding: isMobile ? '1px 5px' : '2px 8px',
                 borderRadius: '9999px',
-                background: isHovered ? '#121110' : 'rgba(255, 255, 255, 0.9)',
+                background: isHovered ? '#121110' : 'rgba(255, 255, 255, 0.95)',
                 color: isHovered ? '#FFFFFF' : 'var(--text-primary)',
                 border: '1px solid ' + (isHovered ? '#121110' : '#E2DBCF'),
-                fontSize: '0.68rem',
+                fontSize: isMobile ? '0.56rem' : '0.68rem',
                 fontWeight: 800,
                 fontFamily: 'var(--font-mono)',
                 whiteSpace: 'nowrap',
@@ -324,18 +341,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div style={{
           position: 'relative',
           zIndex: 30,
-          width: '230px',
-          height: '230px',
+          width: `${coreSize}px`,
+          height: `${coreSize}px`,
           borderRadius: '50%',
           background: '#FFFFFF',
           border: '2.5px solid var(--border-ink)',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.06), 4px 4px 0px #121110',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.06), 3px 3px 0px #121110',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          padding: '20px',
+          padding: isMobile ? '10px' : '20px',
           boxSizing: 'border-box',
           transition: 'all 0.3s ease'
         }}>
@@ -343,7 +360,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* Inner Dashed Dial */}
           <div style={{
             position: 'absolute',
-            inset: '6px',
+            inset: '5px',
             borderRadius: '50%',
             border: '1px dashed #E2DBCF',
             pointerEvents: 'none'
@@ -353,39 +370,38 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {activeNode ? (
             <div style={{ animation: 'floatGentle 3s ease infinite', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '12px',
+                width: isMobile ? '32px' : '46px',
+                height: isMobile ? '32px' : '46px',
+                borderRadius: '10px',
                 background: activeNode.bg,
                 border: `1.5px solid ${activeNode.border}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '4px',
+                marginBottom: '2px',
                 boxShadow: `0 2px 8px ${activeNode.border}33`
               }}>
                 <CognitiveIllustration 
                   gameId={activeNode.id} 
-                  size={30} 
+                  size={isMobile ? 20 : 30} 
                   color={activeNode.color} 
                 />
               </div>
               <div style={{
                 fontFamily: 'var(--font-poster)',
-                fontSize: '1.25rem',
+                fontSize: isMobile ? '0.9rem' : '1.25rem',
                 fontWeight: 900,
                 color: 'var(--text-primary)',
-                marginTop: '2px',
+                marginTop: '1px',
                 textTransform: 'uppercase'
               }}>
                 {activeNode.name}
               </div>
               <div style={{
-                fontSize: '0.66rem',
+                fontSize: isMobile ? '0.52rem' : '0.66rem',
                 fontFamily: 'var(--font-mono)',
                 color: activeNode.color,
                 fontWeight: 800,
-                marginTop: '1px',
                 textTransform: 'uppercase'
               }}>
                 {activeNode.category}
@@ -397,14 +413,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }}
                 className="btn-vermillion"
                 style={{
-                  marginTop: '10px',
-                  padding: '5px 14px',
-                  fontSize: '0.74rem',
+                  marginTop: isMobile ? '6px' : '10px',
+                  padding: isMobile ? '4px 10px' : '5px 14px',
+                  fontSize: isMobile ? '0.64rem' : '0.74rem',
                   boxShadow: '2px 2px 0px #121110',
-                  gap: '4px'
+                  gap: '3px'
                 }}
               >
-                <Play size={11} />
+                <Play size={10} />
                 <span>PLAY NOW</span>
               </button>
             </div>
@@ -414,18 +430,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               
               {/* Logo Dot Accent */}
               <div style={{
-                width: '10px',
-                height: '10px',
+                width: isMobile ? '7px' : '10px',
+                height: isMobile ? '7px' : '10px',
                 borderRadius: '50%',
                 background: 'var(--accent-vermillion)',
-                marginBottom: '4px',
+                marginBottom: '2px',
                 boxShadow: '0 0 8px rgba(255,59,32,0.6)'
               }} />
 
               {/* BRAND LOGO */}
               <h1 style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '2.3rem',
+                fontSize: isMobile ? '1.5rem' : '2.3rem',
                 fontWeight: 900,
                 letterSpacing: '-0.04em',
                 lineHeight: 1,
@@ -436,28 +452,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </h1>
 
               <div style={{
-                fontSize: '0.58rem',
+                fontSize: isMobile ? '0.48rem' : '0.58rem',
                 fontWeight: 800,
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--text-muted)',
-                letterSpacing: '0.14em',
-                marginTop: '4px',
-                marginBottom: '12px'
+                letterSpacing: '0.1em',
+                marginTop: '3px',
+                marginBottom: isMobile ? '6px' : '12px'
               }}>
                 THINK FASTER · PLAY SMARTER
               </div>
 
               {/* Clean Quick Launch Buttons */}
-              <div style={{ display: 'flex', gap: '6px' }}>
+              <div style={{ display: 'flex', gap: isMobile ? '4px' : '6px' }}>
                 <button
                   onClick={onOpenDashboard}
                   style={{
-                    padding: '6px 12px',
+                    padding: isMobile ? '4px 8px' : '6px 12px',
                     borderRadius: '9999px',
                     background: '#121110',
                     color: '#FFFFFF',
                     border: '1.5px solid #121110',
-                    fontSize: '0.72rem',
+                    fontSize: isMobile ? '0.62rem' : '0.72rem',
                     fontWeight: 800,
                     fontFamily: 'var(--font-mono)',
                     cursor: 'pointer',
@@ -470,12 +486,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <button
                   onClick={onTakeTest}
                   style={{
-                    padding: '6px 10px',
+                    padding: isMobile ? '4px 8px' : '6px 10px',
                     borderRadius: '9999px',
                     background: 'var(--bg-cream)',
                     color: 'var(--text-primary)',
                     border: '1.5px solid #121110',
-                    fontSize: '0.72rem',
+                    fontSize: isMobile ? '0.62rem' : '0.72rem',
                     fontWeight: 800,
                     fontFamily: 'var(--font-mono)',
                     cursor: 'pointer'
@@ -498,10 +514,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         position: 'relative',
         zIndex: 10,
         display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
         alignItems: 'center',
-        gap: '10px',
-        marginTop: '8px',
-        padding: '6px 16px',
+        gap: isMobile ? '6px' : '10px',
+        marginTop: isMobile ? '6px' : '12px',
+        padding: isMobile ? '4px 12px' : '6px 16px',
         borderRadius: '9999px',
         background: 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(8px)',
@@ -517,19 +535,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
+            gap: '4px',
+            padding: '3px 8px',
             borderRadius: '9999px',
             border: '1px solid #121110',
             background: isRotating ? '#121110' : 'var(--accent-yellow)',
             color: isRotating ? '#FFFFFF' : '#121110',
             cursor: 'pointer',
-            fontSize: '0.72rem',
+            fontSize: isMobile ? '0.65rem' : '0.72rem',
             fontWeight: 800,
             fontFamily: 'var(--font-mono)'
           }}
         >
-          {isRotating ? <Pause size={11} /> : <Play size={11} />}
+          {isRotating ? <Pause size={10} /> : <Play size={10} />}
           <span>{isRotating ? 'PAUSE' : 'ROTATE'}</span>
         </button>
 
@@ -540,21 +558,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             setSpeedMultiplier(prev => (prev === 1 ? 2 : prev === 2 ? 0.5 : 1));
           }}
           style={{
-            padding: '4px 10px',
+            padding: '3px 8px',
             borderRadius: '9999px',
             border: '1px solid #E2DBCF',
             background: 'var(--bg-main)',
             color: 'var(--text-secondary)',
             cursor: 'pointer',
-            fontSize: '0.72rem',
+            fontSize: isMobile ? '0.65rem' : '0.72rem',
             fontWeight: 800,
             fontFamily: 'var(--font-mono)'
           }}
         >
-          SPEED: {speedMultiplier}x
+          {speedMultiplier}x
         </button>
-
-        <span style={{ width: '1px', height: '14px', background: '#D5CEBF' }} />
 
         {/* Direct Link to Full Dashboard */}
         <button
@@ -562,23 +578,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
+            gap: '4px',
+            padding: '3px 8px',
             borderRadius: '9999px',
             border: 'none',
             background: 'transparent',
             color: 'var(--accent-vermillion)',
             cursor: 'pointer',
-            fontSize: '0.74rem',
+            fontSize: isMobile ? '0.68rem' : '0.74rem',
             fontWeight: 800,
             fontFamily: 'var(--font-mono)'
           }}
         >
-          <span>ALL 8 GAMES & DASHBOARD</span>
-          <ArrowRight size={12} />
+          <span>DASHBOARD</span>
+          <ArrowRight size={11} />
         </button>
       </div>
 
     </div>
   );
 };
+

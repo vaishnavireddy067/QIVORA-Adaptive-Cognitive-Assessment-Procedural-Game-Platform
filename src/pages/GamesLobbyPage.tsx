@@ -455,124 +455,17 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       color: '#121110',
       fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif"
     }}>
-      {/* ── Top Header Navigation matching Image 2 ────────────── */}
-      <header style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 48px',
-        height: '72px',
-        borderBottom: '1px solid #ECE7DD',
-        background: '#FCF9F2',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100
-      }}>
-        {/* Brand Logo */}
-        <div
-          onClick={() => onNavigateTab('games')}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-        >
-          {/* Orange Concentric Circle Bullseye */}
-          <div style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '50%',
-            border: '4px solid #FF5733',
-            background: '#FFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0
-          }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FF5733' }} />
-          </div>
-          <span style={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 900,
-            fontSize: '1.45rem',
-            letterSpacing: '-0.02em',
-            color: '#141312'
-          }}>
-            QIVORA
-          </span>
-        </div>
-
-        {/* Center Links */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
-          {[
-            { id: 'home', label: 'Home' },
-            { id: 'games', label: 'Games' },
-            { id: 'practice', label: 'Practice' },
-            { id: 'test', label: 'Test' },
-            { id: 'results', label: 'Results' }
-          ].map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => onNavigateTab(tab.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: '8px 4px',
-                  fontSize: '0.92rem',
-                  fontWeight: isActive ? 800 : 600,
-                  color: isActive ? '#141312' : '#6B6862',
-                  cursor: 'pointer',
-                  borderBottom: isActive ? '2px solid #FF5733' : '2px solid transparent',
-                  transition: 'all 0.15s ease',
-                  fontFamily: 'inherit'
-                }}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right User Profile Dropdown Chip */}
-        <div
-          onClick={onOpenAuth}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            cursor: 'pointer',
-            padding: '6px 12px',
-            borderRadius: '9999px',
-            transition: 'background 0.15s ease'
-          }}
-        >
-          <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            background: '#141312',
-            color: '#FFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.85rem'
-          }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-          </div>
-          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#141312' }}>{userName}</span>
-          <span style={{ fontSize: '0.75rem', color: '#6B6862' }}>▾</span>
-        </div>
-      </header>
-
-      {/* ── Main Container matching Image 2 ───────────────────── */}
-      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 48px 60px' }}>
+      {/* ── Main Container ───────────────────────────────────── */}
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px 60px' }}>
         
         {/* Hero Section */}
         <div style={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          marginBottom: '36px',
+          gap: '20px',
+          marginBottom: '32px',
           position: 'relative'
         }}>
           <div>
