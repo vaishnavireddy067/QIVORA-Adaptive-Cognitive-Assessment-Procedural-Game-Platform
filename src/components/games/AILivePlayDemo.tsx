@@ -25,6 +25,21 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
   // Grid demo state
   const [gridSolved, setGridSolved] = useState(false);
 
+  // Deductive demo state
+  const [deductiveStep, setDeductiveStep] = useState(0);
+
+  // Motion demo state
+  const [motionLaserActive, setMotionLaserActive] = useState(false);
+
+  // Memory demo state
+  const [memoryPhase, setMemoryPhase] = useState<'memorize' | 'distractor' | 'recall' | 'solved'>('memorize');
+
+  // Attention demo state
+  const [attentionTargetFound, setAttentionTargetFound] = useState(false);
+
+  // Reaction demo state
+  const [reactionPhase, setReactionPhase] = useState<'ready' | 'green' | 'reacted' | 'red_inhibit'>('ready');
+
   // Automatic AI player step sequence
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -76,6 +91,7 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
           timer = setTimeout(() => setStep(4), 1600);
         } else if (step === 4) {
           // AI clicks Rotation: 270°
+          setInductiveHighlightedIdx(3);
           timer = setTimeout(() => setStep(5), 1600);
         } else if (step === 5) {
           // AI submits & celebrates
@@ -89,8 +105,65 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
           setGridSolved(true);
           timer = setTimeout(() => setStep(2), 2000);
         }
+      } else if (gameId === 'deductive') {
+        if (step === 0) {
+          setDeductiveStep(0);
+          timer = setTimeout(() => setStep(1), 1600);
+        } else if (step === 1) {
+          setDeductiveStep(1);
+          timer = setTimeout(() => setStep(2), 1800);
+        } else if (step === 2) {
+          setDeductiveStep(2);
+          timer = setTimeout(() => setStep(3), 2000);
+        }
+      } else if (gameId === 'motion') {
+        if (step === 0) {
+          setMotionLaserActive(false);
+          timer = setTimeout(() => setStep(1), 1600);
+        } else if (step === 1) {
+          setMotionLaserActive(false);
+          timer = setTimeout(() => setStep(2), 1800);
+        } else if (step === 2) {
+          setMotionLaserActive(true);
+          timer = setTimeout(() => setStep(3), 2200);
+        }
+      } else if (gameId === 'memory') {
+        if (step === 0) {
+          setMemoryPhase('memorize');
+          timer = setTimeout(() => setStep(1), 1800);
+        } else if (step === 1) {
+          setMemoryPhase('distractor');
+          timer = setTimeout(() => setStep(2), 1800);
+        } else if (step === 2) {
+          setMemoryPhase('recall');
+          timer = setTimeout(() => setStep(3), 1600);
+        } else if (step === 3) {
+          setMemoryPhase('solved');
+          timer = setTimeout(() => {}, 2000);
+        }
+      } else if (gameId === 'attention') {
+        if (step === 0) {
+          setAttentionTargetFound(false);
+          timer = setTimeout(() => setStep(1), 1600);
+        } else if (step === 1) {
+          setAttentionTargetFound(true);
+          timer = setTimeout(() => setStep(2), 1800);
+        }
+      } else if (gameId === 'reaction') {
+        if (step === 0) {
+          setReactionPhase('ready');
+          timer = setTimeout(() => setStep(1), 1400);
+        } else if (step === 1) {
+          setReactionPhase('green');
+          timer = setTimeout(() => setStep(2), 1200);
+        } else if (step === 2) {
+          setReactionPhase('reacted');
+          timer = setTimeout(() => setStep(3), 1800);
+        } else if (step === 3) {
+          setReactionPhase('red_inhibit');
+          timer = setTimeout(() => {}, 2200);
+        }
       } else {
-        // Generic AI loop for others
         if (step < 2) {
           timer = setTimeout(() => setStep(prev => prev + 1), 1800);
         }
@@ -107,6 +180,11 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
     setMathDemoActiveDigit(null);
     setGridSolved(false);
     setInductiveHighlightedIdx(null);
+    setDeductiveStep(0);
+    setMotionLaserActive(false);
+    setMemoryPhase('memorize');
+    setAttentionTargetFound(false);
+    setReactionPhase('ready');
     setIsPlaying(true);
   };
 
@@ -150,7 +228,7 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
         </button>
       </div>
 
-      {/* 1. SWITCH GAME LIVE AI DEMO (Matching Image 2) */}
+      {/* 1. SWITCH GAME LIVE AI DEMO */}
       {gameId === 'switch' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', width: '100%', maxWidth: '580px' }}>
           
@@ -389,7 +467,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
       {/* 2. INDUCTIVE REASONING LIVE AI DEMO */}
       {gameId === 'inductive' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'center', width: '100%' }}>
-          {/* Progression Sequence */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -405,7 +482,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             maxWidth: '680px',
             position: 'relative'
           }}>
-            {/* AI Pointer Badge */}
             {step < 3 && (
               <div style={{
                 position: 'absolute',
@@ -426,7 +502,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
               </div>
             )}
 
-            {/* Frame 1: Triangle 0 deg */}
             <div style={{
               width: '95px',
               height: '95px',
@@ -450,7 +525,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
 
             <span style={{ fontWeight: 900, fontSize: '1.2rem' }}>→</span>
 
-            {/* Frame 2: Square 90 deg */}
             <div style={{
               width: '95px',
               height: '95px',
@@ -474,7 +548,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
 
             <span style={{ fontWeight: 900, fontSize: '1.2rem' }}>→</span>
 
-            {/* Frame 3: Diamond 180 deg */}
             <div style={{
               width: '95px',
               height: '95px',
@@ -498,7 +571,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
 
             <span style={{ fontWeight: 900, fontSize: '1.2rem' }}>→</span>
 
-            {/* Target Live Viewport */}
             <div style={{
               width: '105px',
               height: '105px',
@@ -545,7 +617,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             </div>
           </div>
 
-          {/* AI Simulated Synthesizer Workbench */}
           <div style={{
             width: '100%',
             maxWidth: '680px',
@@ -622,7 +693,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             </div>
           </div>
 
-          {/* AI Narrative Commentary Box */}
           <div style={{
             width: '100%',
             maxWidth: '680px',
@@ -656,11 +726,9 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
         </div>
       )}
 
-
-      {/* 3. GRID / MATRIX REASONING LIVE AI DEMO (4x4 Latin Square) */}
+      {/* 3. GRID / SPATIAL REASONING LIVE AI DEMO */}
       {gameId === 'grid' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', alignItems: 'center' }}>
-          {/* 4x4 Grid Board matching PrepInsta pattern */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 64px)',
@@ -673,7 +741,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             padding: '16px',
             position: 'relative'
           }}>
-            {/* AI Highlight Banner */}
             <div style={{
               position: 'absolute',
               top: '-12px',
@@ -689,7 +756,7 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
               boxShadow: '2px 2px 0px #121110',
               zIndex: 10
             }}>
-              {gridSolved ? '🤖 PLACED CORRECT CANDIDATE [c. ▲]' : '🤖 SCANNING ROW 4 LATIN-SQUARE ELIMINATION'}
+              {gridSolved ? '🤖 PLACED CORRECT CANDIDATE [c. ▲]' : '🤖 SCANNING ROW 2 LATIN-SQUARE ELIMINATION'}
             </div>
 
             {[
@@ -698,12 +765,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
               { s: '', bg: '#FFF' }, { s: '', bg: '#FFF' }, { s: '▲', bg: '#F1EFEA' }, { s: '', bg: '#FFF' },
               { s: '', bg: '#FFF' }, { s: '', bg: '#FFF' }, { s: '●', bg: '#F1EFEA' }, { s: '', bg: '#FFF' }
             ].map((cell, idx) => {
-              // Custom pattern: let's inspect row 2 (index 4, 5, 6, 7) or row 4
-              // In Image 1:
-              // Row 1: [empty] [empty] [+] [empty]
-              // Row 2: [+] [?] [■] [●]   <-- Target is cell (row 2, col 2, index 5)!
-              // Row 3: [empty] [empty] [▲] [empty]
-              // Row 4: [empty] [empty] [●] [empty]
               const isTarget = idx === 5;
               const isRowHighlighted = idx >= 4 && idx <= 7;
 
@@ -738,7 +799,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             })}
           </div>
 
-          {/* Candidate Options below grid matching Image 1: a. +   b. ■   c. ▲   d. ● */}
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             {[
               { key: 'a', s: '+' },
@@ -777,7 +837,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             })}
           </div>
 
-          {/* AI Reasoning Walkthrough Box */}
           <div style={{
             width: '100%',
             maxWidth: '560px',
@@ -802,10 +861,9 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
         </div>
       )}
 
-      {/* 4. MENTAL MATH KEYPAD EQUATION LIVE AI DEMO (Matching Image 4) */}
+      {/* 4. MENTAL MATH LIVE AI DEMO */}
       {gameId === 'math' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '460px' }}>
-          {/* Equation Display */}
           <div style={{
             background: '#FAF8F5',
             border: '2px solid #141312',
@@ -870,7 +928,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             </div>
           </div>
 
-          {/* Keypad */}
           <div style={{
             background: '#FAF8F5',
             border: '1.5px solid #CBD5E1',
@@ -907,7 +964,6 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
             </div>
           </div>
 
-          {/* AI Narrative Commentary Box */}
           <div style={{
             width: '100%',
             background: step >= 3 ? '#ECFDF5' : '#FFFFFF',
@@ -940,23 +996,460 @@ export const AILivePlayDemo: React.FC<AILivePlayDemoProps> = ({ gameId, onProcee
         </div>
       )}
 
-      {/* 5. GENERIC / OTHER GAMES DEMO */}
-      {gameId !== 'switch' && gameId !== 'inductive' && gameId !== 'grid' && gameId !== 'math' && (
-        <div style={{
-          background: '#FFFFFF',
-          border: '2px solid var(--border-ink)',
-          borderRadius: 'var(--radius-md)',
-          padding: '24px',
-          textAlign: 'center',
-          maxWidth: '560px',
-          margin: '0 auto'
-        }}>
-          <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '8px' }}>
-            🤖 AI Live Play Demonstration
+      {/* 5. DEDUCTIVE REASONING LIVE AI DEMO */}
+      {gameId === 'deductive' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '620px' }}>
+          <div style={{
+            background: '#FAF8F5',
+            border: '2px solid #141312',
+            borderRadius: '16px',
+            padding: '20px',
+            boxShadow: '4px 4px 0px #141312',
+            width: '100%'
+          }}>
+            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', fontWeight: 900, color: '#64748B', marginBottom: '10px' }}>
+              FORMAL SYLLOGISM PREMISES
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{
+                background: '#FFFFFF',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: '1.5px solid #CBD5E1',
+                fontSize: '0.9rem',
+                fontWeight: 700
+              }}>
+                <strong>Premise 1:</strong> All Hexagons are colored Cobalt Blue.
+              </div>
+              <div style={{
+                background: '#FFFFFF',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: '1.5px solid #CBD5E1',
+                fontSize: '0.9rem',
+                fontWeight: 700
+              }}>
+                <strong>Premise 2:</strong> Figure X is a Hexagon.
+              </div>
+            </div>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            The AI automatically identifies optimal decision paths, filters distractors with sub-millisecond precision, and selects the logically guaranteed answer.
-          </p>
+
+          {/* Deductive Conclusions with AI Highlighting */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+            {[
+              { id: 'A', text: 'Figure X is definitely Cobalt Blue.', isCorrect: true },
+              { id: 'B', text: 'Figure X is Crimson Red.', isCorrect: false },
+              { id: 'C', text: 'Cannot be determined with given premises.', isCorrect: false }
+            ].map((opt) => {
+              const isSelected = deductiveStep >= 2 && opt.isCorrect;
+              return (
+                <div
+                  key={opt.id}
+                  style={{
+                    padding: '14px 18px',
+                    borderRadius: '12px',
+                    background: isSelected ? '#ECFDF5' : '#FFFFFF',
+                    border: isSelected ? '2.5px solid #10B981' : '2px solid #CBD5E1',
+                    boxShadow: isSelected ? '3px 3px 0px #10B981' : 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontWeight: 700,
+                    fontSize: '0.95rem'
+                  }}
+                >
+                  <span><strong>{opt.id}.</strong> {opt.text}</span>
+                  {isSelected && (
+                    <span style={{
+                      background: '#10B981',
+                      color: '#FFF',
+                      fontSize: '0.7rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 900,
+                      padding: '3px 8px',
+                      borderRadius: '4px'
+                    }}>
+                      ✓ AI GUARANTEED VALID
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{
+            width: '100%',
+            background: deductiveStep >= 2 ? '#ECFDF5' : '#FFFFFF',
+            border: deductiveStep >= 2 ? '2px solid #10B981' : '2px solid #141312',
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.88rem',
+            lineHeight: 1.5,
+            fontWeight: 600
+          }}>
+            {deductiveStep === 0 && (
+              <span>🤖 <strong>AI Premise Parsing:</strong> Extracting ground truth axioms: (X ∈ Hexagons) ∧ (∀h ∈ Hexagons, color(h) = Cobalt).</span>
+            )}
+            {deductiveStep === 1 && (
+              <span style={{ color: '#0D9488' }}>
+                🤖 <strong>Modus Ponens Application:</strong> Substituting Figure X into universal property yields color(X) = Cobalt Blue without ambiguity.
+              </span>
+            )}
+            {deductiveStep >= 2 && (
+              <span style={{ color: '#047857' }}>
+                🎉 <strong>Deduction Complete:</strong> Option [A] is mathematically necessary. Eliminating invalid distractors B and C!
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 6. MOTION CHALLENGE LIVE AI DEMO */}
+      {gameId === 'motion' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '580px' }}>
+          <div style={{
+            background: '#0F172A',
+            border: '2.5px solid #141312',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '4px 4px 0px #141312',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            position: 'relative'
+          }}>
+            <div style={{ color: '#94A3B8', fontSize: '0.75rem', fontFamily: 'var(--font-mono)', fontWeight: 900, marginBottom: '14px', letterSpacing: '0.08em' }}>
+              OPTICAL LASER DEFLECTION BOARD
+            </div>
+
+            {/* Grid with Laser source & Target Gate */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 50px)',
+              gridTemplateRows: 'repeat(4, 50px)',
+              gap: '6px',
+              background: '#1E293B',
+              padding: '12px',
+              borderRadius: '12px',
+              border: '1.5px solid #334155',
+              position: 'relative'
+            }}>
+              {/* Laser Beam path SVG overlay */}
+              {motionLaserActive && (
+                <svg style={{ position: 'absolute', top: 12, left: 12, width: 274, height: 218, pointerEvents: 'none', zIndex: 10 }}>
+                  {/* From (0, 1) -> (2, 1) -> (2, 3) */}
+                  <line x1="25" y1="83" x2="137" y2="83" stroke="#FF3B20" strokeWidth="4" strokeDasharray="6 3" />
+                  <line x1="137" y1="83" x2="137" y2="195" stroke="#FF3B20" strokeWidth="4" strokeDasharray="6 3" />
+                  <circle cx="137" cy="195" r="8" fill="#10B981" />
+                </svg>
+              )}
+
+              {Array.from({ length: 20 }).map((_, idx) => {
+                const isSource = idx === 5; // (0, 1)
+                const isMirror = idx === 7; // (2, 1)
+                const isGate = idx === 17;  // (2, 3)
+
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      borderRadius: '8px',
+                      background: isSource ? '#FF3B20' : isMirror ? (motionLaserActive ? '#FEF08A' : '#38BDF8') : isGate ? '#10B981' : '#0F172A',
+                      border: '1px solid #475569',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#FFF',
+                      fontSize: '0.8rem',
+                      fontWeight: 900,
+                      fontFamily: 'var(--font-mono)'
+                    }}
+                  >
+                    {isSource && 'LASER'}
+                    {isMirror && (motionLaserActive ? '◢' : '◤')}
+                    {isGate && 'GATE B'}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{
+            width: '100%',
+            background: motionLaserActive ? '#ECFDF5' : '#FFFFFF',
+            border: motionLaserActive ? '2px solid #10B981' : '2px solid #141312',
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.88rem',
+            lineHeight: 1.5,
+            fontWeight: 600
+          }}>
+            {step === 0 && (
+              <span>🤖 <strong>AI Trajectory Vectoring:</strong> Laser enters from left at (0, 1) traveling eastward. Target Gate B is located at (2, 3).</span>
+            )}
+            {step === 1 && (
+              <span style={{ color: '#0D9488' }}>
+                🤖 <strong>Mirror Positioning:</strong> Inserting 45° prism reflector at intersection (2, 1) to divert beam 90° south.
+              </span>
+            )}
+            {step >= 2 && (
+              <span style={{ color: '#047857' }}>
+                🎉 <strong>Optical Intercept Verified:</strong> Laser beam deflected at 90° directly enters Target Gate B! Zero optical loss.
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 7. WORKING MEMORY LIVE AI DEMO */}
+      {gameId === 'memory' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '560px' }}>
+          <div style={{
+            background: '#FAF8F5',
+            border: '2.5px solid #141312',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '4px 4px 0px #141312',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 900,
+              color: memoryPhase === 'distractor' ? '#FF3B20' : '#64748B',
+              marginBottom: '14px'
+            }}>
+              {memoryPhase === 'memorize' && 'PHASE 1: MEMORIZE FLASHING DOTS'}
+              {memoryPhase === 'distractor' && 'PHASE 2: ACTIVE INTERFERENCE DISTRACTOR'}
+              {memoryPhase === 'recall' && 'PHASE 3: AI RECALLING EXACT TARGET NODES'}
+              {memoryPhase === 'solved' && 'PHASE 4: 100% RECALL ACCURACY'}
+            </div>
+
+            {memoryPhase === 'distractor' ? (
+              <div style={{
+                background: '#FEF08A',
+                border: '2px solid #141312',
+                borderRadius: '12px',
+                padding: '20px 30px',
+                textAlign: 'center',
+                boxShadow: '3px 3px 0px #141312'
+              }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#78716C' }}>CALCULATE EQUATION:</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>14 + 7 = ?</div>
+                <div style={{ marginTop: '8px', fontSize: '0.9rem', color: '#047857', fontWeight: 800 }}>🤖 AI Solves: 21 (Filtered Distractor)</div>
+              </div>
+            ) : (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 56px)',
+                gridTemplateRows: 'repeat(4, 56px)',
+                gap: '8px'
+              }}>
+                {Array.from({ length: 16 }).map((_, idx) => {
+                  const isTarget = idx === 2 || idx === 7 || idx === 13;
+                  const isHighlighted = (memoryPhase === 'memorize' || memoryPhase === 'solved') && isTarget;
+                  const isRecalled = memoryPhase === 'recall' && (idx === 2 || idx === 7);
+
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        borderRadius: '10px',
+                        background: isHighlighted ? '#FF3B20' : isRecalled ? '#10B981' : '#FFFFFF',
+                        border: isHighlighted || isRecalled ? '2px solid #141312' : '1.5px solid #CBD5E1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#FFF',
+                        fontSize: '0.85rem',
+                        fontWeight: 900,
+                        transition: 'all 0.2s ease',
+                        boxShadow: isHighlighted ? '0 0 10px rgba(255, 59, 32, 0.4)' : 'none'
+                      }}
+                    >
+                      {isHighlighted && '●'}
+                      {isRecalled && '✓'}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div style={{
+            width: '100%',
+            background: memoryPhase === 'solved' ? '#ECFDF5' : '#FFFFFF',
+            border: memoryPhase === 'solved' ? '2px solid #10B981' : '2px solid #141312',
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.88rem',
+            lineHeight: 1.5,
+            fontWeight: 600
+          }}>
+            {memoryPhase === 'memorize' && (
+              <span>🤖 <strong>Encoding Spatial Nodes:</strong> Storing coordinates [(0, 2), (1, 3), (3, 1)] in phonological buffer.</span>
+            )}
+            {memoryPhase === 'distractor' && (
+              <span style={{ color: '#D97706' }}>
+                🤖 <strong>Interference Filtering:</strong> Rapidly solving arithmetic distractor while preserving spatial grid memory buffer.
+              </span>
+            )}
+            {memoryPhase === 'recall' && (
+              <span style={{ color: '#0D9488' }}>
+                🤖 <strong>Node Reproduction:</strong> Sequentially tapping the memorized dot slots with zero decay.
+              </span>
+            )}
+            {memoryPhase === 'solved' && (
+              <span style={{ color: '#047857' }}>
+                🎉 <strong>Perfect Recall:</strong> All 3 coordinates accurately retrieved post-distractor! Working memory index: 100%.
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 8. ATTENTION & FOCUS LIVE AI DEMO */}
+      {gameId === 'attention' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '560px' }}>
+          <div style={{
+            background: '#FAF8F5',
+            border: '2.5px solid #141312',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '4px 4px 0px #141312',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', fontWeight: 900, color: '#64748B', marginBottom: '14px' }}>
+              TARGET ANOMALY SEARCH: FIND THE UNIQUE ROTATED COMPONENT
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 56px)',
+              gridTemplateRows: 'repeat(3, 56px)',
+              gap: '10px'
+            }}>
+              {Array.from({ length: 12 }).map((_, idx) => {
+                const isAnomaly = idx === 6;
+                const isLocked = attentionTargetFound && isAnomaly;
+
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      borderRadius: '10px',
+                      background: isLocked ? '#FEF08A' : '#FFFFFF',
+                      border: isLocked ? '3px solid #FF3B20' : '1.5px solid #CBD5E1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: isLocked ? '3px 3px 0px #FF3B20' : 'none',
+                      transform: isLocked ? 'scale(1.12)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <svg width="28" height="28" viewBox="0 0 32 32" style={{ transform: isAnomaly ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                      <path d="M16 4 L26 24 L6 24 Z" fill={isAnomaly ? '#FF3B20' : '#334155'} />
+                    </svg>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{
+            width: '100%',
+            background: attentionTargetFound ? '#ECFDF5' : '#FFFFFF',
+            border: attentionTargetFound ? '2px solid #10B981' : '2px solid #141312',
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.88rem',
+            lineHeight: 1.5,
+            fontWeight: 600
+          }}>
+            {!attentionTargetFound ? (
+              <span>🤖 <strong>Parallel Visual Saccade:</strong> Filtering homogenous upward-pointing triangles across the 12-item matrix...</span>
+            ) : (
+              <span style={{ color: '#047857' }}>
+                🎉 <strong>Target Lock-On:</strong> Inverted triangle anomaly pinpointed at Cell #7 in 214ms! Flawless feature-binding speed.
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 9. REACTION SPEED & INHIBITION LIVE AI DEMO */}
+      {gameId === 'reaction' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', maxWidth: '540px' }}>
+          <div style={{
+            background: reactionPhase === 'green' || reactionPhase === 'reacted' ? '#ECFDF5' : reactionPhase === 'red_inhibit' ? '#FEF2F2' : '#FAF8F5',
+            border: '2.5px solid #141312',
+            borderRadius: '16px',
+            padding: '30px',
+            boxShadow: '4px 4px 0px #141312',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            transition: 'background 0.2s ease'
+          }}>
+            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', fontWeight: 900, color: '#64748B', marginBottom: '14px' }}>
+              GO / NO-GO REACTION RADAR
+            </div>
+
+            <div style={{
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              background: reactionPhase === 'green' || reactionPhase === 'reacted' ? '#10B981' : reactionPhase === 'red_inhibit' ? '#EF4444' : '#E2E8F0',
+              border: '3px solid #141312',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFF',
+              fontWeight: 900,
+              fontSize: '1.2rem',
+              boxShadow: '4px 4px 0px #141312',
+              transition: 'all 0.15s ease'
+            }}>
+              {reactionPhase === 'ready' && <span style={{ color: '#64748B' }}>WAIT...</span>}
+              {reactionPhase === 'green' && <span>GO!</span>}
+              {reactionPhase === 'reacted' && <span>184 ms</span>}
+              {reactionPhase === 'red_inhibit' && <span>STOP!</span>}
+            </div>
+          </div>
+
+          <div style={{
+            width: '100%',
+            background: '#FFFFFF',
+            border: '2px solid #141312',
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.88rem',
+            lineHeight: 1.5,
+            fontWeight: 600
+          }}>
+            {reactionPhase === 'ready' && (
+              <span>🤖 <strong>Pre-stimulus Baseline:</strong> Motor cortex primed, awaiting visual cue...</span>
+            )}
+            {reactionPhase === 'green' && (
+              <span style={{ color: '#0D9488' }}>🤖 <strong>Green Signal Detected:</strong> Triggering instant sub-200ms reflex click!</span>
+            )}
+            {reactionPhase === 'reacted' && (
+              <span style={{ color: '#047857' }}>🎉 <strong>Latency: 184ms:</strong> Elite 99th percentile motor execution time recorded!</span>
+            )}
+            {reactionPhase === 'red_inhibit' && (
+              <span style={{ color: '#DC2626' }}>🛡️ <strong>Red Signal (No-Go):</strong> Response successfully inhibited! Zero commission errors.</span>
+            )}
+          </div>
         </div>
       )}
 

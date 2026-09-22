@@ -40,13 +40,15 @@ interface StageConfig {
 }
 
 const ASSESSMENT_ORDER: StageConfig[] = [
-  { gameId: 'inductive', label: 'Inductive Logic', category: 'Spacio & Spatial Patterns', questionCount: 3, description: 'Extract transforming geometric rules and identify identical rule pairs.' },
+  { gameId: 'inductive', label: 'Inductive Logic', category: 'Spacio & Spatial Patterns', questionCount: 2, description: 'Extract transforming geometric rules and identify identical rule pairs.' },
   { gameId: 'color_grid', label: 'Color the Grid', category: 'Diamond Rule Decoding', questionCount: 2, description: 'Deduce indicator rules from 6 reference tables and color 4 query tables.' },
-  { gameId: 'grid', label: 'Grid Challenge', category: 'Spatial Memory & Symmetry', questionCount: 3, description: 'Memorize dot coordinates, solve interleaved symmetry/rotation, and recall nodes.' },
-  { gameId: 'switch', label: 'Switch Challenge', category: 'Transformation Operators', questionCount: 3, description: 'Deduce numerical position switch codes between input and output.' },
-  { gameId: 'deductive', label: 'Deductive Logic', category: 'GeoStudio Sudoku & Syllogisms', questionCount: 3, description: 'Solve Latin square geometrical Sudoku grids and syllogistic conclusions.' },
-  { gameId: 'motion', label: 'Motion Challenge', category: 'Maze Navigation', questionCount: 2, description: 'Navigate tokens through obstacles to the target exit in minimal steps.' },
-  { gameId: 'math', label: 'Digit Challenge', category: 'Numerical Constraints', questionCount: 3, description: 'Fill equation slots with unique digits 1–9 using left-to-right evaluation.' }
+  { gameId: 'grid', label: 'Grid Challenge', category: 'Spatial Memory & Symmetry', questionCount: 2, description: 'Memorize dot coordinates, solve interleaved symmetry/rotation, and recall nodes.' },
+  { gameId: 'switch', label: 'Switch Challenge', category: 'Transformation Operators', questionCount: 2, description: 'Deduce numerical position switch codes between input and output.' },
+  { gameId: 'deductive', label: 'Deductive Logic', category: 'GeoStudio Sudoku & Syllogisms', questionCount: 2, description: 'Solve Latin square geometrical Sudoku grids and syllogistic conclusions.' },
+  { gameId: 'memory', label: 'Working Memory', category: 'Dual-Stage Retention', questionCount: 2, description: 'Memorize coordinate sequences and recall them accurately after interference.' },
+  { gameId: 'attention', label: 'Attention & Focus', category: 'Visual Vigilance', questionCount: 2, description: 'Filter high-density distractors and detect anomalous targets rapidly.' },
+  { gameId: 'motion', label: 'Motion & Prediction', category: 'Trajectory & Maze Navigation', questionCount: 2, description: 'Navigate tokens and trace optical ray reflections to target exits.' },
+  { gameId: 'math', label: 'Numerical Reasoning', category: 'Digit Constraints', questionCount: 2, description: 'Fill equation slots with unique digits 1–9 using left-to-right evaluation.' }
 ];
 
 export const AssessmentPage: React.FC<AssessmentPageProps> = ({ onAssessmentComplete, onExit }) => {
