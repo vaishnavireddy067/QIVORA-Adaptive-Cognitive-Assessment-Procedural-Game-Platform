@@ -79,8 +79,8 @@ export const GAMES_DATA: Record<GameId, GameMetadata> = {
   // ── 04 Cognitive Flexibility ────────────────────────────────────────
   switch: {
     id: 'switch',
-    title: 'Cognitive Flexibility',
-    subtitle: 'Switch & Operator Challenge',
+    title: 'Switch Challenge',
+    subtitle: 'Cognitive Flexibility & Operators',
     skill: 'Cognitive Flexibility',
     category: 'Logical Reasoning',
     description: 'Infer positional transformation operators (e.g. 4321, 2413), reverse operators, and double chained pipelines between inputs and outputs.',

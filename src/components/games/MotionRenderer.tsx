@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MotionPuzzle, MotionBlock } from '../../engine/generators/motionGenerator';
+import { sounds } from '../../services/soundEngine';
 
 interface MotionRendererProps {
   puzzle: MotionPuzzle;
@@ -152,17 +153,20 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
     }
 
     if (!canMove) return;
+    sounds.playClick();
     const updated = blocks.map(b => b.id === id ? { ...b, r: nR, c: nC } : b);
     setBlocks(updated);
     setMoveCount(m => m + 1);
 
     if (block.type === 'ball' && nR === puzzle.targetPos.r && nC === puzzle.targetPos.c) {
+      sounds.playCorrect(1);
       setSolved(true);
       if (onSolved) onSolved(moveCount + 1);
     }
   };
 
   const handleChoiceSelect = (id: string) => {
+    sounds.playClick();
     setSelectedChoice(id);
     const isCorrect =
       puzzle.subtype === 'trajectory_prediction'
@@ -170,10 +174,20 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
         : id === puzzle.correctCollisionId;
 
     if (isCorrect) {
+      sounds.playCorrect(1);
       setSolved(true);
       if (onSolved) onSolved(1);
+    } else {
+      sounds.playError();
     }
   };
+
+  const subtypeTitle = 
+    puzzle.subtype === 'slide_puzzle'
+      ? 'Slide Motion Challenge'
+      : puzzle.subtype === 'trajectory_prediction'
+      ? 'Optical Trajectory & Reflectors'
+      : 'Collision Interception';
 
   return (
     <div style={{
@@ -209,7 +223,7 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
             borderRadius: '16px',
             textTransform: 'uppercase'
           }}>
-            Slide Motion Challenge
+            {subtypeTitle}
           </span>
         </div>
         {puzzle.subtype === 'slide_puzzle' && (
@@ -219,7 +233,13 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
               {puzzle.minMoves && <span style={{ color: '#94A3B8' }}> / min {puzzle.minMoves}</span>}
             </span>
             <button
-              onClick={() => { setBlocks(puzzle.blocks); setMoveCount(0); setSelectedId('ball'); setSolved(false); }}
+              onClick={() => { 
+                sounds.playClick();
+                setBlocks(puzzle.blocks); 
+                setMoveCount(0); 
+                setSelectedId('ball'); 
+                setSolved(false); 
+              }}
               style={{
                 padding: '5px 12px',
                 background: '#FFFFFF',
@@ -237,7 +257,7 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
         )}
       </div>
 
-      {/* ── SUBTYPE: SLIDE PUZZLE ────────────────────────────── */}
+      {/* ── 1. SUBTYPE: SLIDE PUZZLE ─────────────────────────── */}
       {puzzle.subtype === 'slide_puzzle' && (
         <>
           <div style={{ fontSize: '0.84rem', color: '#64748B', textAlign: 'center', maxWidth: '440px', lineHeight: 1.4 }}>
@@ -325,40 +345,243 @@ export const MotionRenderer: React.FC<MotionRendererProps> = ({
               </div>
             </div>
           )}
-
-          {/* Step-by-Step Solution Breakdown matching Image 5 */}
-          {puzzle.solutionSteps && puzzle.solutionSteps.length > 0 && (
-            <div style={{
-              width: '100%',
-              background: '#FFFFFF',
-              border: '1.5px solid #E2E8F0',
-              borderRadius: '14px',
-              padding: '16px 20px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px'
-            }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Optimal Solution Path ({puzzle.minMoves} Moves)
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {puzzle.solutionSteps.map((step, sIdx) => (
-                  <div key={sIdx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: '#334155' }}>
-                    <span style={{
-                      width: '22px', height: '22px', borderRadius: '50%',
-                      background: '#F1F5F9', color: '#475569',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '0.72rem', fontWeight: 800
-                    }}>
-                      {sIdx + 1}
-                    </span>
-                    <span>{step.desc}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </>
+      )}
+
+      {/* ── 2. SUBTYPE: TRAJECTORY PREDICTION (OPTICAL LASER) ── */}
+      {puzzle.subtype === 'trajectory_prediction' && (
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <div style={{ fontSize: '0.86rem', color: '#475569', textAlign: 'center', maxWidth: '440px', lineHeight: 1.4 }}>
+            Trace the optical laser beam fired from <strong>{puzzle.entryGate}</strong>. Each mirror deflects the beam at a <strong>90° angle</strong>. Which Exit Gate will it emerge from?
+          </div>
+
+          {/* Optical Matrix Grid Canvas */}
+          <div style={{
+            position: 'relative',
+            width: '280px',
+            height: '280px',
+            background: '#0B132B',
+            borderRadius: '16px',
+            border: '2.5px solid #1E293B',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            display: 'grid',
+            gridTemplateRows: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            padding: '8px'
+          }}>
+            {/* Grid Cells & Reflectors */}
+            {Array.from({ length: 4 }).map((_, r) =>
+              Array.from({ length: 4 }).map((_, c) => {
+                const mirror = puzzle.reflectors?.find(ref => ref.r === r && ref.c === c);
+                return (
+                  <div
+                    key={`${r}-${c}`}
+                    style={{
+                      border: '1px dashed rgba(255,255,255,0.08)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative'
+                    }}
+                  >
+                    {mirror && (
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '8px',
+                        background: 'rgba(56, 189, 248, 0.15)',
+                        border: '1.5px solid #38BDF8',
+                        boxShadow: '0 0 10px rgba(56, 189, 248, 0.4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#38BDF8',
+                        fontWeight: 900,
+                        fontSize: '1.4rem'
+                      }}>
+                        {mirror.direction}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+
+            {/* Perimeter Exit Gate Indicators */}
+            {puzzle.exitGates?.map(gate => (
+              <div
+                key={gate.id}
+                style={{
+                  position: 'absolute',
+                  top: gate.r === 0 ? '-10px' : gate.r === 3 ? 'calc(100% - 14px)' : `${gate.r * 25 + 8}%`,
+                  left: gate.c === 0 ? '-10px' : gate.c === 3 ? 'calc(100% - 14px)' : `${gate.c * 25 + 8}%`,
+                  background: '#FF3B20',
+                  color: '#FFFFFF',
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  fontSize: '0.65rem',
+                  fontWeight: 900,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                  zIndex: 20
+                }}
+              >
+                {gate.id}
+              </div>
+            ))}
+          </div>
+
+          {/* Candidate Gate Options */}
+          <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '6px' }}>
+            {puzzle.exitGates?.map(gate => {
+              const isSelected = selectedChoice === gate.id;
+              const isCorrect = (showExplanation || solved) && gate.id === puzzle.correctExitGateId;
+              const isWrong = isSelected && !isCorrect && selectedChoice !== null;
+
+              return (
+                <button
+                  key={gate.id}
+                  onClick={() => handleChoiceSelect(gate.id)}
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    background: isCorrect ? '#DCFCE7' : isWrong ? '#FEE2E2' : isSelected ? '#FEF3C7' : '#FFFFFF',
+                    border: isCorrect ? '2px solid #16A34A' : isWrong ? '2px solid #DC2626' : isSelected ? '2px solid #F59E0B' : '1.5px solid #CBD5E1',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontWeight: 800,
+                    fontSize: '0.88rem',
+                    color: isCorrect ? '#166534' : isWrong ? '#991B1B' : '#1E293B',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>{gate.label}</span>
+                  <span style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: isCorrect ? '#16A34A' : '#1E293B',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.75rem'
+                  }}>
+                    {gate.id}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── 3. SUBTYPE: COLLISION INTERCEPTION ────────────────── */}
+      {puzzle.subtype === 'collision_intercept' && (
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <div style={{ fontSize: '0.86rem', color: '#475569', textAlign: 'center', maxWidth: '440px', lineHeight: 1.4 }}>
+            Particles are moving across the radar field. Identify the predicted coordinate where their trajectories will <strong>intersect and collide</strong>.
+          </div>
+
+          {/* Collision Plane View */}
+          <div style={{
+            position: 'relative',
+            width: '280px',
+            height: '280px',
+            background: '#030712',
+            borderRadius: '16px',
+            border: '2.5px solid #1F2937',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            display: 'grid',
+            gridTemplateRows: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            padding: '8px'
+          }}>
+            {/* Grid Sectors */}
+            {Array.from({ length: 4 }).map((_, r) =>
+              Array.from({ length: 4 }).map((_, c) => (
+                <div
+                  key={`${r}-${c}`}
+                  style={{
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.6rem',
+                    color: 'rgba(255,255,255,0.2)',
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  {r},{c}
+                </div>
+              ))
+            )}
+
+            {/* Render Red & Blue Particles */}
+            {puzzle.blocks?.map((p, idx) => (
+              <div
+                key={p.id || idx}
+                style={{
+                  position: 'absolute',
+                  top: `${p.r * 25 + 5}%`,
+                  left: `${p.c * 25 + 5}%`,
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: p.color,
+                  boxShadow: `0 0 14px ${p.color}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFFFFF',
+                  fontWeight: 900,
+                  fontSize: '0.72rem',
+                  zIndex: 10
+                }}
+              >
+                P{idx + 1}
+              </div>
+            ))}
+          </div>
+
+          {/* Sector Options */}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
+            {puzzle.collisionOptions?.map(opt => {
+              const isSelected = selectedChoice === opt.id;
+              const isCorrect = (showExplanation || solved) && opt.id === puzzle.correctCollisionId;
+              const isWrong = isSelected && !isCorrect && selectedChoice !== null;
+
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => handleChoiceSelect(opt.id)}
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    background: isCorrect ? '#DCFCE7' : isWrong ? '#FEE2E2' : isSelected ? '#FEF3C7' : '#FFFFFF',
+                    border: isCorrect ? '2px solid #16A34A' : isWrong ? '2px solid #DC2626' : isSelected ? '2px solid #F59E0B' : '1.5px solid #CBD5E1',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontWeight: 800,
+                    fontSize: '0.88rem',
+                    color: isCorrect ? '#166534' : isWrong ? '#991B1B' : '#1E293B',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>{opt.label}</span>
+                  <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: '#64748B' }}>
+                    {opt.coordinate}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {/* ── Solved banner ───────────────────────────────────── */}
@@ -409,3 +632,4 @@ const btnStyle: React.CSSProperties = {
   boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
   transition: 'all 0.1s',
 };
+

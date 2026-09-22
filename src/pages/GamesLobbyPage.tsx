@@ -163,16 +163,16 @@ export const GamesLobbyPage: React.FC<GamesLobbyPageProps> = ({
       )
     },
 
-    // 04 Cognitive Flexibility
+    // 04 Switch Challenge (Cognitive Flexibility)
     {
       id: 'switch',
       num: '04',
       badgeBg: '#F97316',
       badgeColor: '#FFFFFF',
       badgeIcon: <CognitiveIllustration gameId="switch" size={16} color="#FFFFFF" />,
-      title: 'Cognitive Flexibility',
-      desc: 'Task-switching & pipeline transformations.',
-      subtypes: ['Rule Switch', 'Task Switch', 'Reverse Rule', 'Dual Rule'],
+      title: 'Switch Challenge',
+      desc: 'Pipeline operators, symbol permutations & reverse rules.',
+      subtypes: ['Switch Operator', 'Task Switch', 'Reverse Rule', 'Dual Pipeline'],
       cardBg: '#FFF1EA',
       renderVisual: () => (
         <div style={{
