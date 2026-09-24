@@ -65,8 +65,8 @@ export const RadarChart: React.FC<RadarChartProps> = ({ scores, size = 380, show
   }).join(' ');
 
   return (
-    <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <div style={{ position: 'relative', width: '100%', maxWidth: `${size}px`, aspectRatio: '1/1', margin: '0 auto' }}>
+      <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', overflow: 'visible' }}>
         <defs>
           <linearGradient id="radarUserGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#6366F1" stopOpacity="0.45" />
