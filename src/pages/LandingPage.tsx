@@ -63,11 +63,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth < 900;
-  const radius = isMobile ? 122 : isTablet ? 170 : 230;
-  const stageWidth = isMobile ? 320 : isTablet ? 460 : 640;
-  const stageHeight = isMobile ? 320 : isTablet ? 460 : 600;
-  const viewBox = isMobile ? "-160 -160 320 320" : isTablet ? "-230 -230 460 460" : "-320 -300 640 600";
-  const coreSize = isMobile ? 132 : isTablet ? 175 : 230;
+  const radius = isMobile ? 126 : isTablet ? 170 : 230;
+  const stageWidth = isMobile ? 330 : isTablet ? 460 : 640;
+  const stageHeight = isMobile ? 330 : isTablet ? 460 : 600;
+  const viewBox = isMobile ? "-165 -165 330 330" : isTablet ? "-230 -230 460 460" : "-320 -300 640 600";
+  const coreSize = isMobile ? 148 : isTablet ? 180 : 230;
 
   // Smooth continuous rotation using requestAnimationFrame
   useEffect(() => {
@@ -426,22 +426,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
           ) : (
             /* Default Idle QIVORA Logo & Actions */
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: '0 4px' }}>
               
               {/* Logo Dot Accent */}
               <div style={{
-                width: isMobile ? '7px' : '10px',
-                height: isMobile ? '7px' : '10px',
+                width: isMobile ? '6px' : '10px',
+                height: isMobile ? '6px' : '10px',
                 borderRadius: '50%',
                 background: 'var(--accent-vermillion)',
-                marginBottom: '2px',
+                marginBottom: isMobile ? '2px' : '4px',
                 boxShadow: '0 0 8px rgba(255,59,32,0.6)'
               }} />
 
               {/* BRAND LOGO */}
               <h1 style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: isMobile ? '1.5rem' : '2.3rem',
+                fontSize: isMobile ? '1.35rem' : '2.3rem',
                 fontWeight: 900,
                 letterSpacing: '-0.04em',
                 lineHeight: 1,
@@ -452,23 +452,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </h1>
 
               <div style={{
-                fontSize: isMobile ? '0.48rem' : '0.58rem',
+                fontSize: isMobile ? '0.44rem' : '0.58rem',
                 fontWeight: 800,
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--text-muted)',
-                letterSpacing: '0.1em',
+                letterSpacing: '0.08em',
                 marginTop: '3px',
-                marginBottom: isMobile ? '6px' : '12px'
+                marginBottom: isMobile ? '8px' : '12px',
+                whiteSpace: 'nowrap',
+                maxWidth: '100%',
+                overflow: 'hidden'
               }}>
                 THINK FASTER · PLAY SMARTER
               </div>
 
               {/* Clean Quick Launch Buttons */}
-              <div style={{ display: 'flex', gap: isMobile ? '4px' : '6px' }}>
+              <div style={{ display: 'flex', gap: isMobile ? '4px' : '6px', justifyContent: 'center', width: '100%' }}>
                 <button
                   onClick={onOpenDashboard}
                   style={{
-                    padding: isMobile ? '4px 8px' : '6px 12px',
+                    padding: isMobile ? '4px 10px' : '6px 12px',
                     borderRadius: '9999px',
                     background: '#121110',
                     color: '#FFFFFF',
@@ -477,7 +480,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontWeight: 800,
                     fontFamily: 'var(--font-mono)',
                     cursor: 'pointer',
-                    boxShadow: '1.5px 1.5px 0px var(--accent-vermillion)'
+                    boxShadow: '1.5px 1.5px 0px var(--accent-vermillion)',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   ENTER →
@@ -494,7 +498,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontSize: isMobile ? '0.62rem' : '0.72rem',
                     fontWeight: 800,
                     fontFamily: 'var(--font-mono)',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   ⚡ TEST

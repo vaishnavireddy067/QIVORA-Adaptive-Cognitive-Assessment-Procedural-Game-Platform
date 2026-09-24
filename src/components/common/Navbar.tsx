@@ -107,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}>
               QIVORA
             </span>
-            <div style={{ fontSize: '0.54rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
+            <div className="navbar-tagline" style={{ fontSize: '0.54rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
               PLAY · THINK · GROW
             </div>
           </div>
@@ -248,6 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Unified Profile Badge */}
           <button
+            className="navbar-profile-btn"
             onClick={() => onOpenAuth ? onOpenAuth() : onNavigate('profile')}
             style={{
               display: 'flex',
@@ -260,7 +261,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               boxShadow: 'var(--shadow-tactile-sm)',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              flexShrink: 0
             }}
             title={user.authProvider === 'google' ? `Signed in as ${user.name} (${user.email})` : 'Sign in with Google'}
           >
@@ -291,14 +293,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
               </div>
             )}
-            <span style={{
-              fontWeight: 800,
-              fontSize: '0.78rem',
-              color: 'var(--text-primary)',
-              maxWidth: '80px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}>
+            <span 
+              className="navbar-username"
+              style={{
+                fontWeight: 800,
+                fontSize: '0.78rem',
+                color: 'var(--text-primary)',
+                maxWidth: '80px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {user.name ? user.name : 'Account'}
             </span>
           </button>

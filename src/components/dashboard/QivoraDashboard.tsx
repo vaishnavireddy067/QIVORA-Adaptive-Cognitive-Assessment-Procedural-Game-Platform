@@ -640,6 +640,7 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
 
             {/* Profile Avatar Chip */}
             <div
+              className="navbar-profile-btn"
               onClick={onOpenAuth}
               style={{
                 display: 'flex',
@@ -651,7 +652,8 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
                 borderRadius: '9999px',
                 padding: '4px 12px 4px 6px',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease'
+                transition: 'all 0.15s ease',
+                flexShrink: 0
               }}
               title="Click to view profile / authenticate"
             >
@@ -669,7 +671,10 @@ export const QivoraDashboard: React.FC<QivoraDashboardProps> = ({
               }}>
                 {displayName.charAt(0).toUpperCase()}
               </div>
-              <span style={{ fontSize: '0.82rem', fontWeight: 800, maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span 
+                className="navbar-username"
+                style={{ fontSize: '0.82rem', fontWeight: 800, maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+              >
                 {displayName}
               </span>
             </div>

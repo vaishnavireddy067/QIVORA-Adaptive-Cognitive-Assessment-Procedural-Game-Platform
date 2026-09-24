@@ -624,6 +624,16 @@ h1, h2, h3, .font-display {
   .dashboard-games-grid { grid-template-columns: 1fr; }
   .container { padding: 0 14px; }
 
+  .navbar-username {
+    display: none !important;
+  }
+  .navbar-profile-btn {
+    padding: 3px !important;
+  }
+  .navbar-tagline {
+    display: none !important;
+  }
+
   .dashboard-hero-card {
     padding: 20px 16px;
   }
