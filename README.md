@@ -9,7 +9,6 @@
 
 **QIVORA** is a next-generation cognitive agility and psychometric evaluation platform. Powered by an authoritative **FastAPI** procedural generation backend and an interactive **React 19 / Vite** tactile frontend, QIVORA delivers 8 bespoke mental arenas designed to measure and elevate fluid intelligence, working memory, attention, executive control, and quantitative reasoning.
 
----
 
 ## 🌟 Key Features
 
