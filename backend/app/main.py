@@ -51,7 +51,6 @@ def api_dashboard_summary():
         "telemetry_version": "2.4.0",
         "global_percentile_baseline": 70
     }
-
 @app.get("/")
 def read_root():
     return {
@@ -60,7 +59,6 @@ def read_root():
         "status": "online",
         "engines": ["grid", "inductive", "switch"]
     }
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.app.main:app", host="127.0.0.1", port=8001, reload=True)
